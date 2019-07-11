@@ -10,7 +10,8 @@
 .Rapp.history
 
 # Session Data files
-/*.RData
+./*.RData
+./sim_results/**/*.RData
 
 # User-specific files
 .Ruserdata
