@@ -12,6 +12,7 @@
 # Session Data files
 ./*.RData
 ./sim_results/**/*.RData
+/sim_results/logistic/*.RData
 
 # User-specific files
 .Ruserdata
