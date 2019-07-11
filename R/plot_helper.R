@@ -43,6 +43,7 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
           res_small[["vec_logsubpost"]] <- NULL
           res_small[["vec_loggaussianconst"]] <- NULL
           res_small[["vec_logsubpost_ep"]] <- NULL
+          res_small[["normconstcombined"]] <- as.numeric(res_small[["normconstcombined"]])
           
           res_small[["mat_cov"]] <- NULL
           res_small[["mat_means"]] <- NULL
@@ -58,27 +59,33 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
       }
     }
   }
-  df <- data.frame(matrix(unlist(data_list), nrow=length(data_list), byrow=T))
+  df <- as_tibble(matrix(unlist(data_list), nrow=length(data_list), byrow=T))
   names(df) <- names(res_small)
-  f_convert_factor <- function(x) as.numeric(as.character(x))
+  f_convert_factor <- function(x) as.numeric(levels(x))[x]
+  f_convert_to_numeric <- function(x) as.numeric(gsub("," ,".", x))
   df %<>% mutate(splits = as_factor(splits))
-  df %<>% mutate(var_logsubposteriors =  f_convert_factor(var_logsubposteriors))
-  df %<>% mutate(normconstcombined =  f_convert_factor(normconstcombined))
+  df %<>% mutate(var_logsubposteriors =  f_convert_to_numeric(var_logsubposteriors))
+  df %<>% mutate(normconstcombined =  f_convert_to_numeric(normconstcombined))
   df
 }
 
 # change the normconstcombined back !
 f_plot_res_data_frame <- function(df, vec_datasets = NA, vec_types_splits = NA){
+  f_name <- paste("normconst", vec_datasets, ".pdf", sep="")
   if(!is.na(vec_datasets)){
-  ggplot(df, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
+  p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
     geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df$splits))))) + theme_minimal()# + theme_gray()
   }
   else if(!is.na(vec_types_splits)){
-    ggplot(df, aes_string(x="splits", y="normconstcombined", fill="typesplit")) +
+    p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined", fill="typesplit")) +
       geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df$splits))))) + theme_minimal()# + theme_gray()
   }
   else {
-    ggplot(df, aes_string(x="splits", y="normconstcombined")) +
+    p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined")) +
       geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df$splits))))) + theme_minimal()# + theme_gray()
   }
+  
+  p1 <-  p1 + theme(text = element_text(size=20))
+  
+  ggsave(f_name, plot=p1, device=pdf())
 }
