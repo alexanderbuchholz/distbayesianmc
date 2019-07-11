@@ -70,7 +70,6 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     list_data[["y"]] <- y
   }
   else if (dataset == "gp_test"){
-    # subset of the higgs data set
     set.seed(123)
     N = nobs
     x = 4*pi*runif(N)
