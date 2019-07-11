@@ -21,7 +21,7 @@ source(source_string)
 stan_code <- readChar(fileName, file.info(fileName)$size)
 mod <- stan_model(model_code = stan_code, auto_write = T)
 
-#setwd("/scratch/alexander/run_sim_modelsplitting/results/")
+setwd("/scratch/alexander/run_sim_modelsplitting/results/")
 dataset_loaded <- f_dataset_loader(dataset)
 splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed= task_id, typesplit=typesplit)
 splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
