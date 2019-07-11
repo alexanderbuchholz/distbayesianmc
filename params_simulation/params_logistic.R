@@ -1,7 +1,7 @@
 # params simuatlion logistic
 
 # specifics for stan
-fileName <- "./stan_files/logistic_reg.stan"
+fileName <- "~/R_programming/distbayesianmc/stan_files/logistic_reg.stan"
 
 # single simulation
 
