@@ -2,7 +2,7 @@ library(distbayesianmc)
 
 # test one single run
 if(F){
-  source("./params_simulation/params_logistic.R")
+  source("~/R_programming/distbayesianmc/params_simulation/params_logistic.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
   mod <- stan_model(model_code = stan_code, auto_write = T)
   
@@ -14,15 +14,28 @@ if(F){
   f_plot_grid_params_dens(res_approx)
 }
 
+if(F){
+  source("~/R_programming/distbayesianmc/params_simulation/params_probit.R")
+  stan_code <- readChar(fileName, file.info(fileName)$size)
+  mod <- stan_model(model_code = stan_code, auto_write = T)
+  
+  dataset_loaded <- f_dataset_loader(dataset, nobs = nobs)
+  splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=iter, typesplit=typesplit)
+  splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
+  res_approx <-  f_stan_sampling_splitted_data(mod, splitted_data, dataset = dataset, i_seed = iter, iter = iter, typesplit = typesplit, nchain = nchain, typeprior=typeprior)
+  f_plot_grid_params_dens(res_approx)
+}
+
+
 if(T){
   setwd("~/R_programming/distbayesianmc")
-  source("./params_simulation/params_logistic.R")
+  source("~/R_programming/distbayesianmc/params_simulation/params_probit.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
   
   mod <- stan_model(model_code = stan_code, auto_write = T)
-  setwd("./sim_results/logistic/")
+  setwd("./sim_results/probit/")
   library(doParallel)
-  registerDoParallel(cores=2)
+  registerDoParallel(cores=3)
 
   for(ssplits in vec_splits){
     foreach(iter = 1:iters) %dopar% {
