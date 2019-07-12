@@ -9,12 +9,12 @@
 #SBATCH --array=1-40
 
 
-Rscript ../scripts_r/rscript_modelsplitting.R "30" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex2"
-Rscript ../scripts_r/rscript_modelsplitting.R "50" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex2"
-Rscript ../scripts_r/rscript_modelsplitting.R "100" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex2"
-Rscript ../scripts_r/rscript_modelsplitting.R "200" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex2"
+Rscript ../scripts_r/rscript_modelsplitting.R "30" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex2"
+Rscript ../scripts_r/rscript_modelsplitting.R "50" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex2"
+Rscript ../scripts_r/rscript_modelsplitting.R "100" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex2"
+Rscript ../scripts_r/rscript_modelsplitting.R "200" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex2"
 
-Rscript ../scripts_r/rscript_modelsplitting.R "30" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex1"
-Rscript ../scripts_r/rscript_modelsplitting.R "50" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex1"
-Rscript ../scripts_r/rscript_modelsplitting.R "100" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex1"
-Rscript ../scripts_r/rscript_modelsplitting.R "200" $SLURM_ARRAY_TASK_ID "params_logistic.R" "flights_complex1"
+Rscript ../scripts_r/rscript_modelsplitting.R "30" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex1"
+Rscript ../scripts_r/rscript_modelsplitting.R "50" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex1"
+Rscript ../scripts_r/rscript_modelsplitting.R "100" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex1"
+Rscript ../scripts_r/rscript_modelsplitting.R "200" $SLURM_ARRAY_TASK_ID "params_logit" "flights_complex1"

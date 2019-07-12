@@ -7,7 +7,7 @@ fileName <- "~/R_programming/distbayesianmc/stan_files/probit_reg.stan"
 
 scale <- 1
 
-dataset <- "pima"
+#dataset <- "higgs1"
 iseed <- 42
 iter <- 1
 ssplits <- 5
@@ -16,9 +16,10 @@ typesplit <-  "random"
 nobs <- 10**3
 nchain <- 2000
 typeprior <- "normal"
+Pparams <- 0
 
 iters <- 10
-vec_datasets <- c(dataset)
+vec_datasets <- c("higgs1", "higgs2")
 #vec_datasets <- c(dataset)
 vec_types_splits <- c(typesplit)
 
