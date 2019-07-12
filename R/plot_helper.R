@@ -71,8 +71,8 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
 
 # change the normconstcombined back !
 f_plot_res_data_frame <- function(df, vec_datasets = NA, vec_types_splits = NA){
-  f_name <- paste("normconst", vec_datasets, ".pdf", sep="")
-  if(!is.na(vec_datasets)){
+  f_name <- paste("normconst", paste(vec_datasets,  collapse = ''), ".pdf", sep="")
+  if(all(!is.na(vec_datasets))){
   p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
     geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df$splits))))) + theme_minimal()# + theme_gray()
   }
@@ -84,8 +84,11 @@ f_plot_res_data_frame <- function(df, vec_datasets = NA, vec_types_splits = NA){
     p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined")) +
       geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df$splits))))) + theme_minimal()# + theme_gray()
   }
+  weird <- scales::trans_new("signed_log",
+                             transform=function(x) sign(x)*log(abs(x)),
+                             inverse=function(x) sign(x)*exp(abs(x)))
+  p1 <-  p1 + theme(text = element_text(size=20)) +
+    scale_y_continuous(trans=weird)
   
-  p1 <-  p1 + theme(text = element_text(size=20))
-  
-  ggsave(f_name, plot=p1, device=pdf())
+  ggsave(f_name, plot=p1, device = pdf())
 }

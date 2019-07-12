@@ -1,6 +1,6 @@
 # transform the datasplit to a stan model
 
-f_stan_sampling_splitted_data_logistic <- function(mod, splitted_data, dataset, i_seed, iter, typesplit, epapprox=T, bridgepack=F, typeprior="normal", nchain=2000){
+f_stan_sampling_splitted_data_logistic <- function(mod, splitted_data, dataset, i_seed, iter, typesplit, epapprox=T, bridgepack=F, typeprior="normal", nchain=2000, file_identifier=""){
   ssplits <- length(splitted_data)
   res_stan_sampling <- list()
   
@@ -68,14 +68,14 @@ f_stan_sampling_splitted_data_logistic <- function(mod, splitted_data, dataset, 
   res_small[["mat_cov"]] <- mat_cov
   res_small[["betasamples"]] <- beta_list
   
-  filename_small <- paste("small_sim_stan_", dataset, "_", ssplits, "_splits_rep_", iter, "_seed_", i_seed, "_", typesplit, ".RData", sep = "") 
+  filename_small <- paste("small_sim_stan_", dataset, "_", ssplits, "_splits_rep_", iter, "_seed_", i_seed, "_", typesplit, file_identifier, ".RData", sep = "") 
   save(res_small, file = filename_small)
   return(res_small)
 }
 
 
 
-f_stan_sampling_splitted_data <- function(mod, splitted_data, dataset, i_seed, iter, typesplit, bridgepack=T, typeprior="laplace_normal", nchain=2000){
+f_stan_sampling_splitted_data <- function(mod, splitted_data, dataset, i_seed, iter, typesplit, bridgepack=T, typeprior="laplace_normal", nchain=2000, file_identifier=""){
   ssplits <- length(splitted_data)
   res_stan_sampling <- list()
   
@@ -159,7 +159,7 @@ f_stan_sampling_splitted_data <- function(mod, splitted_data, dataset, i_seed, i
   res_small[["mat_cov"]] <- mat_cov
   res_small[["betasamples"]] <- beta_list
   
-  filename_small <- paste("small_sim_stan_", dataset, "_", ssplits, "_splits_rep_", iter, "_seed_", i_seed, "_", typesplit, ".RData", sep = "") 
+  filename_small <- paste("small_sim_stan_", dataset, "_", ssplits, "_splits_rep_", iter, "_seed_", i_seed, "_", typesplit, file_identifier, ".RData", sep = "") 
   save(res_small, file = filename_small)
   return(res_small)
 }

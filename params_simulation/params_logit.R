@@ -16,6 +16,7 @@ typesplit <-  "random"
 nobs <- 10**3
 nchain <- 2000
 typeprior <- "normal"
+Pparams <- 0
 
 iters <- 10
 vec_datasets <- c("higgs1", "higgs2")
