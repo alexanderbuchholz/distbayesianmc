@@ -2,7 +2,7 @@ library(distbayesianmc)
 
 # test one single run
 if(F){
-  source("~/R_programming/distbayesianmc/params_simulation/params_logistic.R")
+  source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
   mod <- stan_model(model_code = stan_code, auto_write = T)
   
