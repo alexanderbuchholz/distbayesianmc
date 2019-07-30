@@ -52,6 +52,12 @@ pima.results@mcmc.output
 #mean(apply(pima.results@mcmc.output, 1, count_full_collumns))
 #mean(apply(pima.results@mcmc.output, 1, count_collumns_not_bp_skin))
 
+prior_specific_model <- function(dim_model, dim_all, a, b){
+  part1 <- beta(dim_model+a, dim_all - dim_model+b)
+  part2 <- (dim_all+1)*beta(dim_model+1, dim_all - dim_model+1)*beta(a, b)
+  return(part1/(part2 * choose(dim_all,dim_model)))
+}
+
 
 indexM1 <- 1
 indexM2 <- 2
@@ -77,16 +83,4 @@ splitted_dataM2 <- f_prep_prior_logistic(splitted_dataM2, scale = 1)
 res_approx_small <-  f_stan_sampling_splitted_data(mod, splitted_dataM2, dataset = "pima", i_seed = 1, iter = 1, typesplit = "random", nchain = 10000, typeprior="normal")
 logbf_small <-  res_approx_small$normconstcombined
 
-logbf_small - logbf_full
-
-      n.mil=1,
-      seed=1,
-      extra.arguments = list("Adaption_Iterations" = 2e5, 
-                             "AlphaPriorSd" = 1,
-                             "GaussianResidualPriorFamily" = 1,
-                             "GaussianResidualPrior_UnifArg1" = 0.99,
-                             "GaussianResidualPrior_UnifArg2" = 1.
-                             )
-    )
-TopModels(pima.results)
-ManhattanPlot(pima.results)
+logbf_small - logbf_full + log(prior_specific_model(sum(selectorM1), 8, 1, 1))-log(prior_specific_model(sum(selectorM2), 8, 1, 1))
