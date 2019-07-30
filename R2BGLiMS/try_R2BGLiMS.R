@@ -79,3 +79,14 @@ logbf_small <-  res_approx_small$normconstcombined
 
 logbf_small - logbf_full
 
+      n.mil=1,
+      seed=1,
+      extra.arguments = list("Adaption_Iterations" = 2e5, 
+                             "AlphaPriorSd" = 1,
+                             "GaussianResidualPriorFamily" = 1,
+                             "GaussianResidualPrior_UnifArg1" = 0.99,
+                             "GaussianResidualPrior_UnifArg2" = 1.
+                             )
+    )
+TopModels(pima.results)
+ManhattanPlot(pima.results)
