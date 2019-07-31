@@ -12,6 +12,9 @@ predictors <- colnames(X)
 data <- cbind(X, dataset_loaded$y)
 colnames(data)[pvars] <- "outcome"
 
+beta.priors <- cbind(rep(0, pvars-1), rep(1, pvars-1))
+row.names(beta.priors) <- predictors
+
 pima.results <- R2BGLiMS(
       likelihood="Logistic",
       data=data,
@@ -22,12 +25,10 @@ pima.results <- R2BGLiMS(
       n.mil=5,
       seed=2,
       thinning.interval = 1,
-      beta.prior.partitions = list(list("Variables" = predictors, "UniformA"=0.9999, "UniformB"=1)), # fix the hyper prior
+      #beta.prior.partitions = list(list("Variables" = predictors, "UniformA"=0.9999, "UniformB"=1)), # fix the hyper prior
+      beta.priors = beta.priors,
       extra.arguments = list("Adaption_Iterations" = 2e5, 
-                             "AlphaPriorSd" = 1,
-                             "GaussianResidualPriorFamily" = 1,
-                             "GaussianResidualPrior_UnifArg1" = 0.9999,
-                             "GaussianResidualPrior_UnifArg2" = 1.
+                             "AlphaPriorSd" = 1
                              )
     )
 topmodel_res <- TopModels(pima.results)
@@ -55,12 +56,12 @@ pima.results@mcmc.output
 prior_specific_model <- function(dim_model, dim_all, a, b){
   part1 <- beta(dim_model+a, dim_all - dim_model+b)
   part2 <- (dim_all+1)*beta(dim_model+1, dim_all - dim_model+1)*beta(a, b)
-  return(part1/(part2 * choose(dim_all,dim_model)))
+  return(part1/(part2 * choose(dim_all,dim_model))) # take into account that we are looking at exactly one single model
 }
 
 
 indexM1 <- 1
-indexM2 <- 2
+indexM2 <- 4
 log(topmodel_res[indexM1,pvars]/topmodel_res[indexM2,pvars])
 
 selectorM1 <- c(1, topmodel_res[indexM1,(1:pvars-1)])
@@ -75,12 +76,12 @@ dataset_loaded <- f_dataset_loader("pima", nobs = nobs)
 splitted_dataM1 <- f_pack_split_data(dataset_loaded$X[,selectorM1==1], dataset_loaded$y, ssplits=1, iseed=1, typesplit="random")
 splitted_dataM1 <- f_prep_prior_logistic(splitted_dataM1, scale = 1)
 res_approx_full <-  f_stan_sampling_splitted_data(mod, splitted_dataM1, dataset = "pima", i_seed = 1, iter = 1, typesplit = "random", nchain = 10000, typeprior="normal")
-logbf_full <- res_approx_full$normconstcombined
+logbf_M1 <- res_approx_full$normconstcombined
 
 
 splitted_dataM2 <- f_pack_split_data(dataset_loaded$X[,selectorM2==1], dataset_loaded$y, ssplits=1, iseed=1, typesplit="random")
 splitted_dataM2 <- f_prep_prior_logistic(splitted_dataM2, scale = 1)
 res_approx_small <-  f_stan_sampling_splitted_data(mod, splitted_dataM2, dataset = "pima", i_seed = 1, iter = 1, typesplit = "random", nchain = 10000, typeprior="normal")
-logbf_small <-  res_approx_small$normconstcombined
+logbf_M2 <-  res_approx_small$normconstcombined
 
-logbf_small - logbf_full + log(prior_specific_model(sum(selectorM1), 8, 1, 1))-log(prior_specific_model(sum(selectorM2), 8, 1, 1))
+logbf_M1 - logbf_M2   + log(prior_specific_model(sum(selectorM1)-1, 7, 1, 1))-log(prior_specific_model(sum(selectorM2)-1, 7, 1, 1))
