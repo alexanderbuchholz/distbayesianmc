@@ -138,7 +138,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     samplesize = nobs
     betasize = 9
     X = matrix(rnorm(n = samplesize*betasize), ncol = betasize)
-    colnames(X) <- c(1:betasize)
+    colnames(X) <- paste("X", c(1:betasize), sep="")
     betacoef = c(-1,1,rep(0, betasize-3),1)
     prodbeta = X%*%betacoef
     y = rbinom(samplesize, size= 1, prob=1/(1+exp(-prodbeta)))
@@ -151,7 +151,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     samplesize = nobs
     betasize = 9
     X = matrix(rnorm(n = samplesize*betasize), ncol = betasize)
-    colnames(X) <- c(1:betasize)
+    colnames(X) <- paste("X", c(1:betasize), sep="")
     betacoef = c(-1,1,rep(0, betasize-3),1)
     prodbeta = X%*%betacoef
     y = rbinom(samplesize, size= 1, prob=1/(1+exp(-prodbeta)))

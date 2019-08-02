@@ -11,7 +11,6 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
   # TODO: make sur that the scale is set right here!
   beta.priors <- cbind(rep(0, pvars-1), rep(splitted_data_rjmcmc[[i_split]]$scale, pvars-1))
   row.names(beta.priors) <- predictors
-  
   rjmcmc.results <- R2BGLiMS(
     likelihood="Logistic",
     data=data,
@@ -72,17 +71,6 @@ f_bayesfactor_two_models_rjmcmc <- function(rjmcmcressplit, indexM1, indexM2){
   return(log_bayesfactor)
 }
 
-f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1){
-  # repeat sampling, but just for a single split
-  results_topmodels <- list()
-  for(i_iter in 1:iterations){
-    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = 1, i_seed = i_iter, thinning.interval = 100)
-    results_topmodels[[i_iter]] <- rjmcmc_split$topmodel_res
-  }
-  return(results_topmodels)
-  
-}
-
 # function that creates the keys
 f_key_for_model_trans_df <- function(i_res_topmodel, counter_sim){
   p_vars <- dim(i_res_topmodel)[2]
@@ -92,15 +80,30 @@ f_key_for_model_trans_df <- function(i_res_topmodel, counter_sim){
   return(i_res_topmodel)
 }
 
+f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5){
+  # repeat sampling, but just for a single split
+  results_topmodels <- list()
+  for(i_iter in 1:iterations){
+    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = i_iter, thinning.interval = 100)
+    i_res_topmodel <- rjmcmc_split$topmodel_res
+    results_topmodels[[i_iter]] <- f_key_for_model_trans_df(i_res_topmodel, i_iter)
+  }
+  return(results_topmodels)
+  
+}
+
+
+
+
 # function that combines the top model results in one single frame
 # creates the keys and returns a global frame
 f_combine_topmodels_in_df <- function(results_topmodels){
-  counter_sim <- 1
-  for(i_res in results_topmodels){
-    i_res <- f_key_for_model_trans_df(i_res, counter_sim)
-    results_topmodels[[counter_sim]] <- i_res
-    counter_sim <- counter_sim + 1
-  }
+  #counter_sim <- 1
+  #for(i_res in results_topmodels){
+  #  i_res <- f_key_for_model_trans_df(i_res, counter_sim)
+  #  results_topmodels[[counter_sim]] <- i_res
+  #  counter_sim <- counter_sim + 1
+  #}
   
   df_sim_res <-  do.call(rbind, results_topmodels)
   return(df_sim_res)
