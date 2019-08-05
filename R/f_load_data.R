@@ -53,7 +53,7 @@ f_sim_sparse_data <- function(nobs, highcorr=F){
   list_data[["X"]] <- x # remove the last observation here
   list_data[["y"]] <- y
   list_data[["betastar"]] <- c(betavec, alpha, log(sigma))
-  
+  list_data[["dataset"]] <- dataset
   return(list_data)
   
 }
@@ -68,6 +68,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = (data_pima[,8] == "Yes")*1
     list_data[["X"]] <- X
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "gp_test"){
     set.seed(123)
@@ -78,6 +79,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     
     list_data[["X"]] <- matrix(x, nrow = N, ncol = 1) # remove the last observation here
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "sparse_reg_1"){
     list_data <- f_sim_sparse_data(nobs, highcorr)
@@ -86,10 +88,12 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     selector <- rep(T, (P + 2))
     selector[P] <- F
     list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
     #browser()
   }
   else if (dataset == "sparse_reg_2"){
     list_data <- f_sim_sparse_data(nobs, highcorr)
+    #list_data[["dataset"]] <- dataset
     
   }
   else if (dataset == "higgs1"){
@@ -101,6 +105,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]
     list_data[["X"]] <- X # remove the last observation here
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "higgs1_large"){
     # subset of the higgs data set
@@ -111,6 +116,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]
     list_data[["X"]] <- X # remove the last observation here
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "higgs2"){
     # subset of the higgs data set
@@ -121,6 +127,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]
     list_data[["X"]] <- X # remove the last observation here
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "higgs3"){
     # subset of the higgs data set
@@ -131,6 +138,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]
     list_data[["X"]] <- X # remove the last observation here
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "sim1"){
     # this is a missspecified model, the last observation is missing
@@ -145,6 +153,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     list_data[["X"]] <- X[,1:(betasize-1)] # remove the last observation here
     list_data[["y"]] <- y
     list_data[["betastar"]] <- betacoef[1:(betasize-1)]
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "sim2"){
     set.seed(123)
@@ -158,6 +167,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     list_data[["X"]] <- X
     list_data[["y"]] <- y
     list_data[["betastar"]] <- betacoef
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "flights_simple"){
     df <- flights %>%  mutate(y = arr_delay>0) %>% mutate(intercept = 1)%>% select(y, intercept, dep_delay) %>% na.omit()
@@ -168,6 +178,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     # summary(lm)
     list_data[["X"]] <- X
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "flights_complex1"){
     df <- flights %>%  mutate(y = arr_delay>0) %>% select(y, dep_delay, carrier) %>% na.omit()
@@ -183,6 +194,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]*1
     list_data[["X"]] <- X
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "flights_complex2"){
     print("run the complex model with independent intercepts")
@@ -203,6 +215,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     y = df[,1]*1
     list_data[["X"]] <- X
     list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else{print("The type of dataset does not exist!")}
   return(list_data)
