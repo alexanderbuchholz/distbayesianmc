@@ -107,6 +107,18 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     list_data[["y"]] <- y
     list_data[["dataset"]] <- dataset
   }
+  else if (dataset == "higgs1_small"){
+    # subset of the higgs data set
+    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
+    #samplesize = dim(df)[1]
+    samplesize = 1000
+    X = cbind(rep(1, samplesize), df[1:1000,23:29])
+    colnames(X)[1] <- "V1"
+    y = df[1:1000,1]
+    list_data[["X"]] <- X # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+  }
   else if (dataset == "higgs1_large"){
     # subset of the higgs data set
     df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
