@@ -1,6 +1,6 @@
 # functions for distributed R2BGLIMS
 
-f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_seed=1, thinning.interval=1){
+f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_seed=1, thinning.interval=1, savestring=""){
   # bringing the data into the right format
   pvars <- splitted_data_rjmcmc[[i_split]]$Pparams
   X <-  splitted_data_rjmcmc[[i_split]]$X[,2:pvars]
@@ -17,7 +17,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
     outcome.var="outcome",
     g.prior = FALSE,
     model.space.priors=list(
-      "a"=1, "b"=1, "Variables"=predictors),
+      "a"=1, "b"=pvars-1, "Variables"=predictors),
     n.mil=n.mil,
     seed=i_seed,
     thinning.interval = thinning.interval,
@@ -26,9 +26,19 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
                            "AlphaPriorSd" = splitted_data_rjmcmc[[i_split]]$scale**0.5
     )
   )
+  
   topmodel_res <- TopModels(rjmcmc.results)  
   mcmc_ouput <- rjmcmc.results@mcmc.output  
-  return(list(topmodel_res=topmodel_res, mcmc_ouput=mcmc_ouput, rjmcmc.results=rjmcmc.results))
+  nsplits <-  length(splitted_data_rjmcmc)
+  dataset <- splitted_data_rjmcmc[[i_split]]$dataset
+  topmodel_res <- f_key_for_model_trans_df(topmodel_res, i_seed)
+  
+  res_out <- list(topmodel_res=topmodel_res, mcmc_ouput=mcmc_ouput, rjmcmc.results=rjmcmc.results)
+  if(savestring != ""){
+    fname <- paste("rjmcmc_output_", dataset, "_splits_", nsplits,"_i_split_", i_split,  "_iter_", i_seed, ".RData", sep = "")
+    save(res_out, file = fname)
+  }
+  return(res_out)
 }
 
 prior_prob_k_specific_model <- function(dim_model, dim_all, a=1, b=1){
@@ -80,17 +90,30 @@ f_key_for_model_trans_df <- function(i_res_topmodel, counter_sim){
   return(i_res_topmodel)
 }
 
-f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5){
+f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, savestring = ""){
   # repeat sampling, but just for a single split
   results_topmodels <- list()
   for(i_iter in 1:iterations){
-    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = i_iter, thinning.interval = 100)
-    i_res_topmodel <- rjmcmc_split$topmodel_res
-    results_topmodels[[i_iter]] <- f_key_for_model_trans_df(i_res_topmodel, i_iter)
+    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = i_iter, thinning.interval = 100, savestring = savestring)
+    #i_res_topmodel <- rjmcmc_split$topmodel_res
+    #rjmcmc_split$topmodel_res <- f_key_for_model_trans_df(i_res_topmodel, i_iter)
+    results_topmodels[[i_iter]] <- rjmcmc_split
   }
   return(results_topmodels)
   
 }
+
+f_parallel_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, ncores = 4, savestring = ""){
+  library(doParallel)
+  registerDoParallel(cores=ncores)
+  
+  foreach(iter = 1:iterations) %dopar% {
+    #for(iter in 1:20){
+    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = iter, thinning.interval = 100, savestring = savestring)
+
+  }
+}
+
 
 
 
@@ -98,14 +121,74 @@ f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split =
 # function that combines the top model results in one single frame
 # creates the keys and returns a global frame
 f_combine_topmodels_in_df <- function(results_topmodels){
-  #counter_sim <- 1
-  #for(i_res in results_topmodels){
-  #  i_res <- f_key_for_model_trans_df(i_res, counter_sim)
-  #  results_topmodels[[counter_sim]] <- i_res
-  #  counter_sim <- counter_sim + 1
-  #}
+  counter_sim <- 1
+  list_res <- list()
+  for(i_res in results_topmodels){
+    list_res[[counter_sim]] <- i_res$topmodel_res
+    counter_sim <- counter_sim + 1
+  }
   
-  df_sim_res <-  do.call(rbind, results_topmodels)
+  df_sim_res <-  do.call(rbind, list_res)
   return(df_sim_res)
+}
+
+
+f_bf_simple_approx <- function(splitted_data_rjmcmc, results_topmodels, indexM1, indexM2, i_split, typesplit = "random"){
+  pvars_all <- splitted_data_rjmcmc[[i_split]]$d  
+  pvars <- 1+dim(results_topmodels[[i_split]]$topmodel_res)[2]-3
+  selectorM1 <- c(1, as.numeric(results_topmodels[[1]]$topmodel_res[indexM1,(1:(pvars-1))])) # selection of included vars based on the first run of th sampler
+  selectorM2 <- c(1, as.numeric(results_topmodels[[1]]$topmodel_res[indexM2,(1:(pvars-1))]))
+  
+  source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
+  stan_code <- readChar(fileName, file.info(fileName)$size)
+  mod <- stan_model(model_code = stan_code, auto_write = T)
+  
+  
+  splitted_dataM1 <- f_pack_split_data(splitted_data_rjmcmc[[i_split]]$X[,selectorM1==1], splitted_data_rjmcmc[[i_split]]$y, ssplits=1, iseed=1, typesplit=typesplit)
+  splitted_dataM1 <- f_prep_prior_logistic(splitted_dataM1, scale = splitted_data_rjmcmc[[i_split]]$scale)
+  res_approx_M1 <-  f_stan_sampling_splitted_data(mod, splitted_dataM1, dataset = dataset, i_seed = 1, iter = 1, typesplit = typesplit, nchain = 10000, typeprior="normal")
+  logbf_M1 <- res_approx_M1$normconstcombined
+  
+  splitted_dataM2 <- f_pack_split_data(splitted_data_rjmcmc[[i_split]]$X[,selectorM2==1], splitted_data_rjmcmc[[i_split]]$y, ssplits=1, iseed=1, typesplit=typesplit)
+  splitted_dataM2 <- f_prep_prior_logistic(splitted_dataM2, scale = splitted_data_rjmcmc[[i_split]]$scale)
+  res_approx_M2 <-  f_stan_sampling_splitted_data(mod, splitted_dataM2, dataset = dataset, i_seed = 1, iter = 1, typesplit = typesplit, nchain = 10000, typeprior="normal")
+  logbf_M2 <-  res_approx_M2$normconstcombined
+  estimate_single <- logbf_M1 - logbf_M2   + log(prior_prob_k_specific_model(sum(selectorM1)-1, pvars_all-1, 1, pvars_all-1)) - log(prior_prob_k_specific_model(sum(selectorM2)-1, pvars_all-1, 1, pvars_all-1))  
+  return(estimate_single)
+}
+
+
+
+f_simple_bf_two_models_all_splits <- function(list_params_model, results_topmodels, indexM1, indexM2){
+  scale <-  list_params_model$scale
+  ssplits <-  list_params_model$ssplits
+  typesplit <-  list_params_model$typesplit
+  dataset <-  list_params_model$dataset
+  dataset_loaded <- f_dataset_loader(dataset)
+  
+  
+  pvars_all <- splitted_data_rjmcmc[[1]]$d  
+  pvars <- 1+dim(results_topmodels[[1]]$topmodel_res)[2]-3
+  selectorM1 <- c(1, as.numeric(results_topmodels[[1]]$topmodel_res[indexM1,(1:(pvars-1))])) # selection of included vars based on the first run of th sampler
+  selectorM2 <- c(1, as.numeric(results_topmodels[[1]]$topmodel_res[indexM2,(1:(pvars-1))]))
+  
+  source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
+  stan_code <- readChar(fileName, file.info(fileName)$size)
+  mod <- stan_model(model_code = stan_code, auto_write = T)
+  
+  
+  splitted_dataM1 <- f_pack_split_data(dataset_loaded$X[,selectorM1==1], dataset_loaded$y, ssplits=ssplits, iseed=1, typesplit=typesplit, dataset = list_params_model$dataset)
+  splitted_dataM1 <- f_prep_prior_logistic(splitted_dataM1, scale = list_params_model$scale)
+  res_approx_M1 <-  f_stan_sampling_splitted_data(mod, splitted_dataM1, dataset = dataset, i_seed = 1, iter = 1, typesplit = typesplit, nchain = 10000, typeprior="normal")
+  #logbf_M1 <- res_approx_M1$normconstcombined
+  res_approx_M1$model_prior <- log(prior_prob_k_specific_model(sum(selectorM1)-1, pvars_all-1, 1, pvars_all-1))
+  
+  splitted_dataM2 <- f_pack_split_data(dataset_loaded$X[,selectorM2==1], dataset_loaded$y, ssplits=ssplits, iseed=1, typesplit=typesplit, dataset = list_params_model$dataset)
+  splitted_dataM2 <- f_prep_prior_logistic(splitted_dataM2, scale = list_params_model$scale)
+  res_approx_M2 <-  f_stan_sampling_splitted_data(mod, splitted_dataM2, dataset = dataset, i_seed = 1, iter = 1, typesplit = typesplit, nchain = 10000, typeprior="normal")
+  res_approx_M2$model_prior <- log(prior_prob_k_specific_model(sum(selectorM2)-1, pvars_all-1, 1, pvars_all-1))
+  #logbf_M2 <-  res_approx_M2$normconstcombined
+  #estimate_single <- logbf_M1 - logbf_M2   + log(prior_prob_k_specific_model(sum(selectorM1)-1, pvars_all-1, 1, pvars_all-1)) - log(prior_prob_k_specific_model(sum(selectorM2)-1, pvars_all-1, 1, pvars_all-1))  
+  return(list(M1 = res_approx_M1, M2 = res_approx_M2))
 }
 
