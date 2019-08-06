@@ -1,6 +1,6 @@
 # help files for splitting
 
-f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, typesplit="random"){
+f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, typesplit="random", dataset = ""){
   # returns a list with the splitted data
   set.seed(iseed)
   splitslist <- list()
@@ -21,6 +21,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       }
       splitslist[[i_s]][["Pparams"]] <- splitslist[[i_s]][["d"]]+Pparams
       splitslist[[i_s]][["n"]] <- dim(X[selector == i_s,,drop = F])[1]
+      splitslist[[i_s]][["dataset"]] <- dataset
     }
   }
   else if(typesplit == "strat_y") {
@@ -67,6 +68,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       splitslist[[i_s]][["d"]] <- numvars
       splitslist[[i_s]][["n"]] <- length(mat[,numvars + 1])
       splitslist[[i_s]][["Pparams"]] <- splitslist[[i_s]][["d"]]+Pparams
+      splitslist[[i_s]][["dataset"]] <- dataset
       #df <- setdiff(df, out)
     }
   }
@@ -111,6 +113,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       splitslist[[i_s]][["d"]] <- numvars
       splitslist[[i_s]][["n"]] <- length(mat[,numvars + 1])
       splitslist[[i_s]][["Pparams"]] <- splitslist[[i_s]][["d"]]+Pparams
+      splitslist[[i_s]][["dataset"]] <- dataset
       #df <- setdiff(df, out)
     }
   }
@@ -162,6 +165,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       splitslist[[i_s]][["kappa"]] <- mat[,numvars + 1]-0.5
       splitslist[[i_s]][["d"]] <- numvars
       splitslist[[i_s]][["n"]] <- length(mat[,numvars + 1])
+      splitslist[[i_s]][["dataset"]] <- dataset
       #df <- setdiff(df, out)
     }
   }
@@ -210,6 +214,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       splitslist[[i_s]][["kappa"]] <- mat[,numvars + 1]-0.5
       splitslist[[i_s]][["d"]] <- numvars
       splitslist[[i_s]][["n"]] <- length(mat[,numvars + 1])
+      splitslist[[i_s]][["dataset"]] <- dataset
       #df <- setdiff(df, out)
     }
   }
@@ -254,6 +259,7 @@ f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, type
       splitslist[[i_s]][["kappa"]] <- y[selector == i_s]-0.5
       splitslist[[i_s]][["d"]] <- dim(X[selector == i_s,])[2]
       splitslist[[i_s]][["n"]] <- dim(X[selector == i_s,])[1]
+      splitslist[[i_s]][["dataset"]] <- dataset
     }
   }
   return(splitslist)
