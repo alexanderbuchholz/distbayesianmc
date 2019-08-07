@@ -5,7 +5,7 @@ library(distbayesianmc)
 list_params_model <- list(scale =  1,
                           ssplits =  1,
                           typesplit =  "random",
-                          dataset =  "pima")
+                          dataset =  "higgs1_small")
 
 dataset_loaded <- f_dataset_loader(list_params_model$dataset)
 splitted_data_rjmcmc <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=list_params_model$ssplits, iseed=1, typesplit=list_params_model$typesplit, dataset = list_params_model$dataset_loaded$dataset)
@@ -29,7 +29,7 @@ df_sim_res_all <-  do.call(rbind, results_splits_topmodel_frame)
 # 2. filter rows that have been most visited
 keys_models <- df_sim_res_all[df_sim_res_all$counter_sim==1,]$key_model
 indexM1 <- 1
-indexM2 <- 2
+indexM2 <- 3
 
 key1 <- keys_models[indexM1]
 key2 <- keys_models[indexM2]
@@ -48,13 +48,11 @@ df_sim_res_all_M12 <- df_sim_res_all[(df_sim_res_all$key == key1 | df_sim_res_al
 #df_sim_res <- f_combine_topmodels_in_df(results_topmodels_parallel)
 #colnames_sim_res <- colnames(df_sim_res)
 # the keys for the different models
-keys_models <- df_sim_res[df_sim_res$counter_sim==1,]$key_model
+#keys_models <- df_sim_res[df_sim_res$counter_sim==1,]$key_model
 
-indexM1 <- 1
-indexM2 <- 2
 
-res_simple_comp <- f_simple_bf_two_models_all_splits(list_params_model, results_topmodels, indexM1, indexM2)
-res_simple_comp$M1$vec_logsubpost - res_simple_comp$M2$vec_logsubpost + res_simple_comp$M1$model_prior - res_simple_comp$M2$model_prior
+res_simple_comp <- f_simple_bf_two_models_all_splits(list_params_model, results_topmodels_parallel, indexM1, indexM2)
+estimate_single <- res_simple_comp$M1$vec_logsubpost - res_simple_comp$M2$vec_logsubpost + res_simple_comp$M1$model_prior - res_simple_comp$M2$model_prior
 #f_bayesfactor_two_models_rjmcmc(rjmcmc_split1, indexM1, indexM2)
 
 
