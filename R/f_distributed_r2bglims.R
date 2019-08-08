@@ -241,7 +241,9 @@ f_summary_stats_per_split <- function(key, res_split_list){
   return(summary_stats_list) # first layer: splits, second layer iterations
 }
 
-f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key1, key2){
+
+
+f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key1, key2, list_params_model_multisplits){
   mrep <- length(res_onesplit$results_splits[[1]])
   bfonesplit <- rep(0, mrep)
   
@@ -249,11 +251,15 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
   summary_stats_list1 <- f_summary_stats_per_split(key1, res_several_splits)
   summary_stats_list2 <- f_summary_stats_per_split(key2, res_several_splits)
   
+  df1 <- res_onesplit$df_sim_res_all
+  df2 <- res_several_splits$df_sim_res_all
+  
   bfseveralsplits <- rep(0, mrep)
   
   for(i_rep in 1:mrep){
     # single split
-    postprob1 <- df1 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% select(Post.Prob) 
+    #browser()
+    postprob1 <- df1 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% dplyr::select("Post.Prob") 
     bfonesplit[i_rep] <- log(postprob1[1,]/postprob1[2,])
     
     # several splits
@@ -261,13 +267,13 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
     M2dim <- sum(unlist(strsplit(key2, "")) == "1") + 1 # number of variables
     fulldim_no_intercept <- nchar(key1)
     
-    df2 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% select(Post.Prob, split, key_model)
-    df2_key1 <- df2 %>% filter(key_model == key1) %>% filter(counter_sim == 1) %>% select(Post.Prob, split)
-    df2_key2 <- df2 %>% filter(key_model == key2) %>% filter(counter_sim == 1) %>% select(Post.Prob, split)
+    df2 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% dplyr::select(Post.Prob, split, key_model)
+    df2_key1 <- df2 %>% filter(key_model == key1) %>% filter(counter_sim == 1) %>% dplyr::select(Post.Prob, split)
+    df2_key2 <- df2 %>% filter(key_model == key2) %>% filter(counter_sim == 1) %>% dplyr::select(Post.Prob, split)
     bfsplits <- df2_key1$Post.Prob/df2_key2$Post.Prob
     
-    log_alpha_key1 <- list_params_model_twosplits$ssplits*f_alpha_sub(ssplits = list_params_model_twosplits$ssplits, Vprior = diag(rep(list_params_model_twosplits$scale, M1dim)), typeprior = "normal")
-    log_alpha_key2 <- list_params_model_twosplits$ssplits*f_alpha_sub(ssplits = list_params_model_twosplits$ssplits, Vprior = diag(rep(list_params_model_twosplits$scale, M2dim)), typeprior = "normal")
+    log_alpha_key1 <- list_params_model_multisplits$ssplits*f_alpha_sub(ssplits = list_params_model_multisplits$ssplits, Vprior = diag(rep(list_params_model_multisplits$scale, M1dim)), typeprior = "normal")
+    log_alpha_key2 <- list_params_model_multisplits$ssplits*f_alpha_sub(ssplits = list_params_model_multisplits$ssplits, Vprior = diag(rep(list_params_model_multisplits$scale, M2dim)), typeprior = "normal")
     
     log_priorM1 <- log(prior_prob_k_specific_model(M1dim-1, fulldim_no_intercept, 1, fulldim_no_intercept))
     log_priorM2 <- log(prior_prob_k_specific_model(M2dim-1, fulldim_no_intercept, 1, fulldim_no_intercept))
