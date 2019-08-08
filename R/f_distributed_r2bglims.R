@@ -283,7 +283,7 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
     prod2 <- f_integral_product_gaussian(summary_stats_list2[[i_rep]]$mat_means, summary_stats_list2[[i_rep]]$mat_cov)
     
     
-    log_bf_splits <- sum(log(bfsplits)) - log_prior_odds + log_alpha_key1 - log_alpha_key2 + prod1 - prod2
+    log_bf_splits <- sum(log(bfsplits)) - (list_params_model_twosplits$ssplits-1)*log_prior_odds + log_alpha_key1 - log_alpha_key2 + prod1 - prod2
     #log(bffull)
     
     bfseveralsplits[i_rep] <- log_bf_splits
