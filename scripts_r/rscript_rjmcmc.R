@@ -13,7 +13,7 @@ list_params_model_onesplit <- list(scale =  1,
                                    dataset =  "higgs1_small", 
                                    mrep = 24,
                                    n.mil = 5, 
-                                   n.cores = 1)
+                                   n.cores = 8)
 
 list_params_model_multisplits1 <- list(scale =  1,
                                        ssplits =  2,
@@ -21,7 +21,7 @@ list_params_model_multisplits1 <- list(scale =  1,
                                        dataset =  "higgs1_small",#"",
                                        mrep = 24, 
                                        n.mil = 5,
-                                       n.cores = 1)
+                                       n.cores = 8)
 
 list_params_model_multisplits2 <- list(scale =  1,
                                        ssplits =  3,
@@ -29,7 +29,7 @@ list_params_model_multisplits2 <- list(scale =  1,
                                        dataset =  "higgs1_small",#"",
                                        mrep = 24,
                                        n.mil = 5,
-                                       n.cores = 1)
+                                       n.cores = 8)
 
 list_params_model_multisplits3 <- list(scale =  1,
                                        ssplits =  5,
@@ -37,7 +37,7 @@ list_params_model_multisplits3 <- list(scale =  1,
                                        dataset =  "higgs1_small",#"",
                                        mrep = 24,
                                        n.mil = 5,
-                                       n.cores = 1)
+                                       n.cores = 8)
 
 list_params_model_multisplits4 <- list(scale =  1,
                                        ssplits =  10,
@@ -45,7 +45,7 @@ list_params_model_multisplits4 <- list(scale =  1,
                                        dataset =  "higgs1_small",#"",
                                        mrep = 24,
                                        n.mil = 5,
-                                       n.cores = 1)
+                                       n.cores = 8)
 
 
 list_params_model <- list(list_params_model_onesplit, 
