@@ -153,7 +153,6 @@ f_combine_topmodels_in_df <- function(results_topmodels){
 
 f_simple_bf_two_models_all_splits <- function(list_params_model, key1, key2){
   #browser()
-  scale <-  list_params_model$scale
   ssplits <-  list_params_model$ssplits
   typesplit <-  list_params_model$typesplit
   dataset <-  list_params_model$dataset
@@ -168,7 +167,7 @@ f_simple_bf_two_models_all_splits <- function(list_params_model, key1, key2){
   
   source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
-  mod <- stan_model(model_code = stan_code, auto_write = T)
+  mod <- rstan::stan_model(model_code = stan_code, auto_write = T)
   #browser()
   
   splitted_dataM1 <- f_pack_split_data(dataset_loaded$X[,selectorM1==1], dataset_loaded$y, ssplits=ssplits, iseed=1, typesplit=typesplit, dataset = list_params_model$dataset)
