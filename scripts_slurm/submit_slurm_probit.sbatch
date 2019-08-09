@@ -4,7 +4,7 @@
 #
 
 #SBATCH -n 1              # on one node
-#SBATCH -t 48-0:00         # Running time of 2 hours
+#SBATCH -t 24-0:00         # Running time of 2 hours
 
 #SBATCH --array=1-20
 
