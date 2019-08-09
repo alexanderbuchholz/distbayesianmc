@@ -29,11 +29,13 @@ if(F){
 
 if(T){
   setwd("~/R_programming/distbayesianmc")
-  source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
+  #source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
+  source("~/R_programming/distbayesianmc/params_simulation/params_probit.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
   
   mod <- stan_model(model_code = stan_code, auto_write = T)
-  setwd("./sim_results/logistic/")
+  #setwd("./sim_results/logistic/")
+  setwd("./sim_results/probit/")
   library(doParallel)
   registerDoParallel(cores=3)
   for(dataset in vec_datasets){
