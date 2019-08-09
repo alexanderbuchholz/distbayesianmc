@@ -67,7 +67,7 @@ list_params_model <- list(list_params_model_onesplit,
                           list_params_model_multisplits3, 
                           list_params_model_multisplits4)
 
-#setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
+setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
 for(params_model in list_params_model){
   res_sim <- f_single_run_rep_rjmcmc(params_model, sim_id)
   save(res_sim, file = paste("res_split_id", params_model$idsim, "_splits_", params_model$ssplits, ".RData", sep = ""))

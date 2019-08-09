@@ -20,7 +20,7 @@ Pparams <- 0
 
 iters <- 20
 #vec_datasets <- c("higgs1", "higgs2")
-vec_datasets <- c("flights_complex1", "flights_complex2")
+vec_datasets <- c("flights_complex1", "flights_complex2", "higgs1_full", "higgs2_full")
 #vec_datasets <- c("pima")
 vec_types_splits <- c(typesplit)
 
