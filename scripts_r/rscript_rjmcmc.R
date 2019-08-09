@@ -12,6 +12,8 @@ n.mil <- 5
 n.cores <- 8
 dataset <-  "higgs1_small"
 typesplit <-  "random"
+savestring <-  paste(dataset, typesplit, sep = "_")
+idsim <-  0
 
 list_params_model_onesplit <- list(scale =  1,
                                    ssplits =  1,
@@ -19,7 +21,8 @@ list_params_model_onesplit <- list(scale =  1,
                                    dataset = dataset, 
                                    mrep = mrep,
                                    n.mil = n.mil, 
-                                   n.cores = n.cores)
+                                   n.cores = n.cores, 
+                                   savestring = savestring)
 
 list_params_model_multisplits1 <- list(scale =  1,
                                        ssplits =  2,
@@ -27,7 +30,8 @@ list_params_model_multisplits1 <- list(scale =  1,
                                        dataset = dataset,#"",
                                        mrep = mrep, 
                                        n.mil = n.mil,
-                                       n.cores = n.cores)
+                                       n.cores = n.cores,
+                                       savestring = savestring)
 
 list_params_model_multisplits2 <- list(scale =  1,
                                        ssplits =  3,
@@ -35,7 +39,8 @@ list_params_model_multisplits2 <- list(scale =  1,
                                        dataset = dataset,#"",
                                        mrep = mrep,
                                        n.mil = n.mil,
-                                       n.cores = n.cores)
+                                       n.cores = n.cores,
+                                       savestring = savestring)
 
 list_params_model_multisplits3 <- list(scale =  1,
                                        ssplits =  5,
@@ -43,7 +48,8 @@ list_params_model_multisplits3 <- list(scale =  1,
                                        dataset = dataset,#"",
                                        mrep = mrep,
                                        n.mil = n.mil,
-                                       n.cores = n.cores)
+                                       n.cores = n.cores,
+                                       savestring = savestring)
 
 list_params_model_multisplits4 <- list(scale =  1,
                                        ssplits =  10,
@@ -51,7 +57,8 @@ list_params_model_multisplits4 <- list(scale =  1,
                                        dataset = dataset,#"",
                                        mrep = mrep,
                                        n.mil = n.mil,
-                                       n.cores = n.cores)
+                                       n.cores = n.cores,
+                                       savestring = savestring)
 
 
 list_params_model <- list(list_params_model_onesplit, 
@@ -61,5 +68,7 @@ list_params_model <- list(list_params_model_onesplit,
                           list_params_model_multisplits4)
 
 setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
-res_sim <- f_full_run_rep_rjmcmc(list_params_model[[sim_id]])
-save(res_sim, file = paste("res_split_id", sim_id, ".RData", sep = ""))
+for(params_model in list_params_model){
+  res_sim <- f_single_run_rep_rjmcmc(params_model, sim_id)
+  save(res_sim, file = paste("res_split_id", params_model$idsim, "_splits_", params_model$ssplits, ".RData", sep = ""))
+}

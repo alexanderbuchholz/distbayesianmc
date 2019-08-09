@@ -35,7 +35,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
   
   res_out <- list(topmodel_res=topmodel_res, mcmc_ouput=mcmc_ouput, rjmcmc.results=rjmcmc.results)
   if(savestring != ""){
-    fname <- paste("rjmcmc_output_", dataset, "_splits_", nsplits,"_i_split_", i_split,  "_iter_", i_seed, ".RData", sep = "")
+    fname <- paste("rjmcmc_output_", dataset, savestring, "_splits_", nsplits,"_i_split_", i_split,  "_iter_", i_seed, ".RData", sep = "")
     save(res_out, file = fname)
   }
   return(res_out)
@@ -81,11 +81,11 @@ f_key_for_model_trans_df <- function(i_res_topmodel, counter_sim){
   return(i_res_topmodel)
 }
 
-f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, savestring = ""){
+f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, savestring = "", i_seed = 1){
   # repeat sampling, but just for a single split
   results_topmodels <- list()
   for(i_iter in 1:iterations){
-    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = i_iter, thinning.interval = 100, savestring = savestring)
+    rjmcmc_split <- f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = i_seed, thinning.interval = 100, savestring = savestring)
     #i_res_topmodel <- rjmcmc_split$topmodel_res
     #rjmcmc_split$topmodel_res <- f_key_for_model_trans_df(i_res_topmodel, i_iter)
     results_topmodels[[i_iter]] <- rjmcmc_split
@@ -200,7 +200,12 @@ f_full_run_rep_rjmcmc <- function(list_params_model){
   results_splits <- list()
   results_splits_topmodel_frame <- list()
   for(i_split in 1:list_params_model$ssplits){
-    results_topmodels_parallel <- f_parallel_repeat_rjmcmc_sampling(mrep, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, ncores = list_params_model$n.cores, savestring = "test")
+    if(iflist_params_model$n.cores==1){
+      results_topmodels_parallel <- f_repeat_rjmcmc_sampling(mrep, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, savestring = list_params_model$savestring)
+    }
+    else{
+      results_topmodels_parallel <- f_parallel_repeat_rjmcmc_sampling(mrep, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, ncores = list_params_model$n.cores, savestring = list_params_model$savestring)
+    }
     results_splits[[i_split]] <- results_topmodels_parallel
     df_sim_res <- f_combine_topmodels_in_df(results_topmodels_parallel)
     df_sim_res[["split"]] <- i_split
@@ -209,6 +214,27 @@ f_full_run_rep_rjmcmc <- function(list_params_model){
   df_sim_res_all <-  do.call(rbind, results_splits_topmodel_frame)
   return(list(results_splits=results_splits, df_sim_res_all = df_sim_res_all))
 }
+
+f_single_run_rep_rjmcmc <- function(list_params_model, i_seed){
+  dataset_loaded <- f_dataset_loader(list_params_model$dataset)
+  splitted_data_rjmcmc <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=list_params_model$ssplits, iseed=1, typesplit=list_params_model$typesplit, dataset = list_params_model$dataset)
+  splitted_data_rjmcmc <- f_prep_prior_logistic(splitted_data_rjmcmc, scale = list_params_model$scale)
+  #i_split <-  1
+  
+  # repeat the sampling on one single split
+  results_splits <- list()
+  results_splits_topmodel_frame <- list()
+  for(i_split in 1:list_params_model$ssplits){
+    results_topmodels_parallel <- f_repeat_rjmcmc_sampling(1, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, savestring = list_params_model$savestring, i_seed = i_seed)
+    #results_splits[[i_split]] <- results_topmodels_parallel
+    #df_sim_res <- f_combine_topmodels_in_df(results_topmodels_parallel)
+    #df_sim_res[["split"]] <- i_split
+    #results_splits_topmodel_frame[[i_split]] <- df_sim_res
+  }
+  #df_sim_res_all <-  do.call(rbind, results_splits_topmodel_frame)
+  #return(list(results_splits=results_splits, df_sim_res_all = df_sim_res_all))
+}
+
 
 f_filter_rows_mcmc_rjmcmc_output <- function(mcmc_output, topmodel_res, key_model){
   # filter selected colums

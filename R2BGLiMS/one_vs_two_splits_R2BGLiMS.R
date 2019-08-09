@@ -9,7 +9,8 @@ list_params_model_onesplit <- list(scale =  10,
                           dataset =  "pima", 
                           mrep = 12,
                           n.mil = 2, 
-                          ncores = 4)
+                          ncores = 4, 
+                          savestring = "")
 
 list_params_model_multisplits1 <- list(scale =  10,
                                    ssplits =  3,
@@ -17,9 +18,10 @@ list_params_model_multisplits1 <- list(scale =  10,
                                    dataset =  "pima",#"",
                                    mrep = 12, 
                                    n.mil = 2, 
-                                   ncores = 4)
+                                   ncores = 4,
+                                   savestring = "test2")
 
-
+f_single_run_rep_rjmcmc(list_params_model_multisplits1, 2)
 
 res_onesplit <- f_full_run_rep_rjmcmc(list_params_model_onesplit)
 save(res_onesplit, file="res_onesplit.RData")
