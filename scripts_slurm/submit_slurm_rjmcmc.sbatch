@@ -3,7 +3,7 @@
 #SBATCH -J rjmcm
 #
 
-#SBATCH -n 1              # on one node
+#SBATCH -n 8              # on one node
 #SBATCH -t 12-0:00         # Running time of 2 hours
 
 #SBATCH --array=1-5

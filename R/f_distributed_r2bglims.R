@@ -96,6 +96,8 @@ f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split =
 
 f_parallel_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, ncores = 4, savestring = ""){
   library(doParallel)
+  #cl <- makeCluster(ncores)
+  #registerDoParallel(cl)
   registerDoParallel(cores=ncores)
   
   foreach(iter = 1:iterations) %dopar% {

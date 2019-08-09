@@ -17,7 +17,7 @@ list_params_model_multisplits1 <- list(scale =  10,
                                    dataset =  "pima",#"",
                                    mrep = 12, 
                                    n.mil = 2, 
-                                   ncores = 6)
+                                   ncores = 4)
 
 
 
