@@ -13,7 +13,7 @@ list_params_model_onesplit <- list(scale =  10,
 
 list_params_model_multisplits1 <- list(scale =  10,
                                    ssplits =  3,
-                                   typesplit =  "random",
+                                   typesplit =  "strat_y_cluster",
                                    dataset =  "pima",#"",
                                    mrep = 12, 
                                    n.mil = 2, 
@@ -38,6 +38,7 @@ df_single_split <- res_onesplit$df_sim_res_all
 #keys <- df1[df1$counter_sim==1,]$key_model
 
 f_intersection_keys <- function(splits, df, df_single_split = ""){
+  #browser()
   keys_per_split1 <- df %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
   common_keys <- intersect(keys_per_split1, keys_per_split1)  
   if(df_single_split != ""){
@@ -53,9 +54,9 @@ f_intersection_keys <- function(splits, df, df_single_split = ""){
 
 
 
-common_keys <- f_intersection_keys(list_params_model_multisplits1$ssplits, df1, df_single_split)
+common_keys <- f_intersection_keys(list_params_model_multisplits1$ssplits, df1)#, df_single_split)
 
-i_split <- 2
+i_split <- 3
 i_rep <- 4
 
 
@@ -72,6 +73,7 @@ log( (df1 %>%  filter((key_model == key1  ) & split == i_split) %>% dplyr::selec
       (df1 %>%  filter((key_model == key2 ) & split == i_split) %>% dplyr::select(Post.Prob)))
 
 
+# find out what goes wrong here
 bf_rjmcmc <- f_joint_bf_model_splits_rjmcmc(res_onesplit, res_multisplit1, key1, key2, list_params_model_multisplits1)
 
 res_simple_comp <- f_simple_bf_two_models_all_splits(list_params_model_multisplits1, key1, key2)

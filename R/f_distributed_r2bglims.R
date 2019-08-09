@@ -97,9 +97,9 @@ f_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split =
 f_parallel_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, i_split = 1, n.mil = 5, ncores = 4, savestring = ""){
   library(doParallel)
   library(parallel)
-  cl <- parallel::makeCluster(ncores)
-  doParallel::registerDoParallel(cl)
-  #registerDoParallel(cores=ncores)
+  #cl <- parallel::makeCluster(ncores)
+  #doParallel::registerDoParallel(cl)
+  registerDoParallel(cores=ncores)
   
   foreach(iter = 1:iterations) %dopar% {
     #for(iter in 1:20){
@@ -107,7 +107,7 @@ f_parallel_repeat_rjmcmc_sampling <- function(iterations, splitted_data_rjmcmc, 
     distbayesianmc::f_rjmcmc_on_splits(splitted_data_rjmcmc, i_split = i_split, n.mil = n.mil, i_seed = iter, thinning.interval = 100, savestring = savestring)
 
   }
-  parallel::stopCluster(cl)
+  #parallel::stopCluster(cl)
 }
 
 
