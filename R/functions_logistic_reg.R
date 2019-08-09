@@ -193,7 +193,7 @@ log_sum_exp <- function(x){
   log(sum(exp(x - max(x)))) + max(x)
 }
 
-f_parallel_sampler <- function(datasplits, n_steps=22000, burnin=2000, filename_individual_sim = "tempsavesim", returnres=F){
+f_parallel_sampler <- function(datasplits, n_steps=22000, burnin=1000, filename_individual_sim = "tempsavesim", returnres=F){
   # run the sampler on the datasplits
   ssplits <- length(datasplits)
   #browser()
@@ -202,6 +202,7 @@ f_parallel_sampler <- function(datasplits, n_steps=22000, burnin=2000, filename_
     # run the sampler here
     print(paste("sample split ", i_s))
     srepchain <- f_sample_chain(n_steps=n_steps, params=datasplits[[i_s]], burnin=burnin)
+    #browser()
     muproxy <- apply(srepchain$chainbeta, 1, mean)
     normconstchib <- f_logprior(muproxy, datasplits[[i_s]])-
       f_logconditional_mean(muproxy, srepchain, datasplits[[i_s]])+
@@ -305,6 +306,9 @@ logistic_isub_adapted <- function(filename_individual_sim, ssplits){
     condSigma[i,,,] <- srepchain$chainVw
   }
   #browser()
+  if(ssplits == 1){
+    print("code does not work for a single split")
+  }
   #f_integral_product_gaussian(condmu[,,1], aperm(condSigma[,,,1], c(2,3,1)))
   condintegral <- vapply(1:B, function (b) f_integral_product_gaussian(condmu[,,b], aperm(condSigma[,,,b], c(2,3,1))), matrix(0,1,1))
   #condintegral <- sapply(1:B, function (b) normalise_product_norm(t(condmu[,,b]),aperm(condSigma[,,,b], c(2,3,1))))

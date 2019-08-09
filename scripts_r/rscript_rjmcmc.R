@@ -10,7 +10,7 @@ sim_id <- as.numeric(args[1])
 mrep <- 24
 n.mil <- 5
 n.cores <- 8
-dataset <-  "higgs1_small"
+dataset <-  "pima"
 typesplit <-  "random"
 savestring <-  paste(dataset, typesplit, sep = "_")
 idsim <-  0
@@ -67,7 +67,7 @@ list_params_model <- list(list_params_model_onesplit,
                           list_params_model_multisplits3, 
                           list_params_model_multisplits4)
 
-setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
+#setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
 for(params_model in list_params_model){
   res_sim <- f_single_run_rep_rjmcmc(params_model, sim_id)
   save(res_sim, file = paste("res_split_id", params_model$idsim, "_splits_", params_model$ssplits, ".RData", sep = ""))

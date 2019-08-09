@@ -25,7 +25,7 @@ f_function_model_split_logistic <- function(ssplits, iter = 1, iseed = 42, datas
 
 
 # load the data
-f_function_model_split <- function(ssplits, iter = 1, iseed = 42, n_steps = 22000, burnin = 2000, dataset = "sim", typesplit = "random", returnres=F, scale=1) {
+f_function_model_split <- function(ssplits, iter = 1, iseed = 42, n_steps = 22000, burnin = 1000, dataset = "sim", typesplit = "random", returnres=F, scale=1) {
   datalist <- f_dataset_loader(dataset)
   X <- datalist[["X"]]
   y <- datalist[["y"]]
@@ -118,11 +118,10 @@ f_function_model_split <- function(ssplits, iter = 1, iseed = 42, n_steps = 2200
   else return(list(res_small, res_chain))
 }
 
-f_function_model_split_daniel <- function(ssplits, iter = 1, iseed = 42, n_steps = 22000, burnin = 2000, dataset = "sim", typesplit = "random") {
-  datalist <- f_dataset_load_logistic_regression(dataset)
+f_function_model_split_daniel <- function(ssplits, iter = 1, iseed = 42, n_steps = 22000, burnin = 2000, dataset = "sim", typesplit = "random", scale = 1) {
+  datalist <- f_dataset_loader(dataset)
   X <- datalist[["X"]]
   y <- datalist[["y"]]
-  scale = 1
   datasplits <- f_pack_split_data(X,y, ssplits = ssplits, iseed = iseed, typesplit = typesplit)
   rm(X, y, datalist)
   #datasplits <- f_pack_all_data(X,y)

@@ -26,7 +26,7 @@ f_plot_grid_params_dens <- function(res, betastar=NA){
 }
 
 
-f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_splits, iters){
+f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_splits, iters, type_sim = "stan_"){
   vec_iter <- c(1:iters)
   data_list <- list()
   icounter <- 1
@@ -34,7 +34,8 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
     for(ssplits in vec_splits){
       for(iter in vec_iter){
         for(typesplit in vec_types_splits){
-          filename_small <- paste("small_sim_stan_", dataset, "_", ssplits, "_splits_rep_", iter, "_seed_" , iter, "_", typesplit, ".RData",sep="")
+          filename_small <- paste("small_sim_", type_sim, dataset, "_", ssplits, "_splits_rep_", iter, "_seed_" , iter, "_", typesplit, ".RData",sep="")
+          #browser()
           load(file=filename_small)
           res_small[["iter"]] <- iter
           res_small[["splits"]] <- ssplits
@@ -48,6 +49,7 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
           res_small[["mat_cov"]] <- NULL
           res_small[["mat_means"]] <- NULL
           res_small[["vec_condintegral"]] <- NULL
+          res_small$vec_logsubposteriors <- NULL
           res_small$vec_logsubpost_is <- NULL
           res_small$betasamples <- NULL
           res_small[["dataset"]] <- dataset
@@ -59,11 +61,13 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
       }
     }
   }
+  #browser()
   df <- as_tibble(matrix(unlist(data_list), nrow=length(data_list), byrow=T))
   names(df) <- names(res_small)
   f_convert_factor <- function(x) as.numeric(levels(x))[x]
   f_convert_to_numeric <- function(x) as.numeric(gsub("," ,".", x))
   df %<>% mutate(splits = as_factor(splits))
+  
   df %<>% mutate(var_logsubposteriors =  f_convert_to_numeric(var_logsubposteriors))
   df %<>% mutate(normconstcombined =  f_convert_to_numeric(normconstcombined))
   df

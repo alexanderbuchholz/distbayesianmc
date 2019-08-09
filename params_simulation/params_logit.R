@@ -14,7 +14,7 @@ scale <- 1
 
 typesplit <-  "random"
 nobs <- 10**3
-nchain <- 2000
+nchain <- 3000
 typeprior <- "normal"
 Pparams <- 0
 
@@ -24,5 +24,6 @@ vec_datasets <- c("pima")
 vec_types_splits <- c(typesplit)
 
 # multiple simulations
-vec_splits <- c(1,2,3,5,10,20)
-vec_splits <- c(1)
+#vec_splits <- c(1,2,3,5,10,20)
+vec_splits <- c(2,3,5,10)#,20)
+#vec_splits <- c(1)

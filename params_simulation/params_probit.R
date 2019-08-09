@@ -14,13 +14,13 @@ ssplits <- 5
 
 typesplit <-  "random"
 nobs <- 10**3
-nchain <- 2000
+nchain <- 3000
 typeprior <- "normal"
 Pparams <- 0
 
 iters <- 10
-vec_datasets <- c("higgs1", "higgs2")
-#vec_datasets <- c(dataset)
+#vec_datasets <- c("higgs1", "higgs2")
+vec_datasets <- c("pima")
 vec_types_splits <- c(typesplit)
 
 # multiple simulations
