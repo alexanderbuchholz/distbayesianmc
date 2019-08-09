@@ -7,45 +7,51 @@ print(args)
 
 sim_id <- as.numeric(args[1])
 
+mrep <- 24
+n.mil <- 5
+n.cores <- 8
+dataset <-  "higgs1_small"
+typesplit <-  "random"
+
 list_params_model_onesplit <- list(scale =  1,
                                    ssplits =  1,
-                                   typesplit =  "random",
-                                   dataset =  "higgs1_small", 
-                                   mrep = 24,
-                                   n.mil = 5, 
-                                   n.cores = 8)
+                                   typesplit =  typesplit,
+                                   dataset = dataset, 
+                                   mrep = mrep,
+                                   n.mil = n.mil, 
+                                   n.cores = n.cores)
 
 list_params_model_multisplits1 <- list(scale =  1,
                                        ssplits =  2,
-                                       typesplit =  "random",
-                                       dataset =  "higgs1_small",#"",
-                                       mrep = 24, 
-                                       n.mil = 5,
-                                       n.cores = 8)
+                                       typesplit =  typesplit,
+                                       dataset = dataset,#"",
+                                       mrep = mrep, 
+                                       n.mil = n.mil,
+                                       n.cores = n.cores)
 
 list_params_model_multisplits2 <- list(scale =  1,
                                        ssplits =  3,
-                                       typesplit =  "random",
-                                       dataset =  "higgs1_small",#"",
-                                       mrep = 24,
-                                       n.mil = 5,
-                                       n.cores = 8)
+                                       typesplit =  typesplit,
+                                       dataset = dataset,#"",
+                                       mrep = mrep,
+                                       n.mil = n.mil,
+                                       n.cores = n.cores)
 
 list_params_model_multisplits3 <- list(scale =  1,
                                        ssplits =  5,
-                                       typesplit =  "random",
-                                       dataset =  "higgs1_small",#"",
-                                       mrep = 24,
-                                       n.mil = 5,
-                                       n.cores = 8)
+                                       typesplit =  typesplit,
+                                       dataset = dataset,#"",
+                                       mrep = mrep,
+                                       n.mil = n.mil,
+                                       n.cores = n.cores)
 
 list_params_model_multisplits4 <- list(scale =  1,
                                        ssplits =  10,
-                                       typesplit =  "random",
-                                       dataset =  "higgs1_small",#"",
-                                       mrep = 24,
-                                       n.mil = 5,
-                                       n.cores = 8)
+                                       typesplit =  typesplit,
+                                       dataset = dataset,#"",
+                                       mrep = mrep,
+                                       n.mil = n.mil,
+                                       n.cores = n.cores)
 
 
 list_params_model <- list(list_params_model_onesplit, 

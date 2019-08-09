@@ -3,12 +3,12 @@
 library(distbayesianmc)
 library(dplyr)
 
-list_params_model_onesplit <- list(scale =  1,
+list_params_model_onesplit <- list(scale =  10,
                           ssplits =  1,
                           typesplit =  "random",
                           dataset =  "pima", 
-                          mrep = 18,
-                          n.mil = 5, 
+                          mrep = 12,
+                          n.mil = 2, 
                           ncores = 4)
 
 list_params_model_multisplits1 <- list(scale =  10,
@@ -21,8 +21,8 @@ list_params_model_multisplits1 <- list(scale =  10,
 
 
 
-#res_onesplit <- f_full_run_rep_rjmcmc(list_params_model_onesplit)
-#save(res_onesplit, file="res_onesplit.RData")
+res_onesplit <- f_full_run_rep_rjmcmc(list_params_model_onesplit)
+save(res_onesplit, file="res_onesplit.RData")
 
 res_multisplit1 <- f_full_run_rep_rjmcmc(list_params_model_multisplits1)
 save(res_multisplit1, file="res_multisplit1.RData")
@@ -33,12 +33,17 @@ save(res_multisplit1, file="res_multisplit1.RData")
 #head(res_onesplit$df_sim_res_all)
 #head(res_twosplits$df_sim_res_all)
 df1 <- res_multisplit1$df_sim_res_all
+df_single_split <- res_onesplit$df_sim_res_all
 #df2 <- res_twosplits$df_sim_res_all
 #keys <- df1[df1$counter_sim==1,]$key_model
 
-f_intersection_keys <- function(splits, df){
+f_intersection_keys <- function(splits, df, df_single_split = ""){
   keys_per_split1 <- df %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
-  common_keys <- intersect(keys_per_split1, keys_per_split1)    
+  common_keys <- intersect(keys_per_split1, keys_per_split1)  
+  if(df_single_split != ""){
+    keys_per_split_single_split <- df_single_split %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
+    common_keys <- intersect(keys_per_split1, keys_per_split_single_split)  
+  }
   for(i_split in 2:splits){
     keys_per_split_i <- df %>% filter(counter_sim == 1, split==i_split) %>% dplyr::select(key_model)
     common_keys <- intersect(common_keys, keys_per_split_i)    
@@ -48,10 +53,10 @@ f_intersection_keys <- function(splits, df){
 
 
 
-common_keys <- f_intersection_keys(list_params_model_multisplits1$ssplits, df1)
+common_keys <- f_intersection_keys(list_params_model_multisplits1$ssplits, df1, df_single_split)
 
 i_split <- 2
-i_rep <- 3
+i_rep <- 4
 
 
 index_M1 <- 1
@@ -63,7 +68,11 @@ key2 <- common_keys[index_M2,]
 log(mean( (df1 %>%  filter((key_model == key1  ) & split == i_split) %>% dplyr::select(Post.Prob))[,]  ) / 
   mean((df1 %>%  filter((key_model == key2 ) & split == i_split) %>% dplyr::select(Post.Prob))[,] ) )
 
-#bf_rjmcmc <- f_joint_bf_model_splits_rjmcmc(res_onesplit, res_multisplit1, key1, key2)
+log( (df1 %>%  filter((key_model == key1  ) & split == i_split) %>% dplyr::select(Post.Prob))/ 
+      (df1 %>%  filter((key_model == key2 ) & split == i_split) %>% dplyr::select(Post.Prob)))
+
+
+bf_rjmcmc <- f_joint_bf_model_splits_rjmcmc(res_onesplit, res_multisplit1, key1, key2, list_params_model_multisplits1)
 
 res_simple_comp <- f_simple_bf_two_models_all_splits(list_params_model_multisplits1, key1, key2)
 
