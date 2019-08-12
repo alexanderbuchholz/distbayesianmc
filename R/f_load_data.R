@@ -57,7 +57,7 @@ f_sim_sparse_data <- function(nobs, highcorr=F){
   return(list_data)
   
 }
-f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
+f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   list_data <- list()
   if(dataset == "pima"){
     data_pima = rbind(Pima.tr, Pima.te)
@@ -190,6 +190,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     set.seed(123)
     samplesize = nobs
     betasize = 9
+    
     X = matrix(rnorm(n = samplesize*betasize), ncol = betasize)
     colnames(X) <- paste("X", c(1:betasize), sep="")
     betacoef = c(-1,1,rep(0, betasize-3),1)
@@ -204,7 +205,18 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = F){
     set.seed(123)
     samplesize = nobs
     betasize = 9
+    if(highcorr) {
+      corr_mat <- matrix(0.99, nrow = betasize, ncol = betasize)
+      diag(corr_mat) <- rep(1,betasize)
+      
+      var_x <- rep(1,betasize)
+      sigma_x <- diag(var_x) %*% corr_mat %*% diag(var_x)
+    }
+    else sigma_x <- diag(nrow = betasize)
     X = matrix(rnorm(n = samplesize*betasize), ncol = betasize)
+    for (n in 1:N) {
+      X[n,] <- mvtnorm::rmvnorm(1, sigma=sigma_x)
+    }
     colnames(X) <- paste("X", c(1:betasize), sep="")
     betacoef = c(-1,1,rep(0, betasize-3),1)
     prodbeta = X%*%betacoef
