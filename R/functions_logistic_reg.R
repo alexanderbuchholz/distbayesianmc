@@ -44,7 +44,7 @@ f_dmvnorm <-  function(x, mu, Sigma, logflag = F){
 }
 
 
-f_prep_prior_logistic <- function(ssplitlist, dataset = "", scale=1){
+f_prep_prior_logistic <- function(ssplitlist, scale=1){
   # uses a normal prior
   #browser()
   ssplits = length(ssplitlist)
@@ -56,7 +56,6 @@ f_prep_prior_logistic <- function(ssplitlist, dataset = "", scale=1){
     ssplitlist[[isplit]][["scale"]] <- scale*ssplits
     ssplitlist[[isplit]][["Bprior"]] <- Sigma
     ssplitlist[[isplit]][["Bpriorinv"]] <- solve(Sigma)
-    ssplitlist[[isplit]][["dataset"]] <- dataset
   }
   return(ssplitlist)
 }
