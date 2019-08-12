@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH -J rjmcm
+#SBATCH -J rjmcmc
 #
 
 #SBATCH -n 1              # on one node
@@ -8,6 +8,7 @@
 
 #SBATCH --array=1-20
 
+#SBATCH --mail-type=FAIL
 
 Rscript ../scripts_r/rscript_rjmcmc.R $SLURM_ARRAY_TASK_ID
 

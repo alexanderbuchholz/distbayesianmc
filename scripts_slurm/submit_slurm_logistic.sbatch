@@ -8,6 +8,7 @@
 
 #SBATCH --array=1-20
 
+#SBATCH --mail-type=FAIL
 
 Rscript ../scripts_r/rscript_logit_ind.R $SLURM_ARRAY_TASK_ID
 
