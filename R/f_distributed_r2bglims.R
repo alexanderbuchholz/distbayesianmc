@@ -1,6 +1,7 @@
 # functions for distributed R2BGLIMS
 
 f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_seed=1, thinning.interval=1, savestring=""){
+  #browser()
   # bringing the data into the right format
   pvars <- splitted_data_rjmcmc[[i_split]]$Pparams
   X <-  splitted_data_rjmcmc[[i_split]]$X[,2:pvars]
@@ -32,6 +33,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
   nsplits <-  length(splitted_data_rjmcmc)
   dataset <- splitted_data_rjmcmc[[i_split]]$dataset
   topmodel_res <- f_key_for_model_trans_df(topmodel_res, i_seed)
+  
   
   res_out <- list(topmodel_res=topmodel_res, mcmc_ouput=mcmc_ouput, rjmcmc.results=rjmcmc.results)
   if(savestring != ""){
@@ -220,7 +222,7 @@ f_single_run_rep_rjmcmc <- function(list_params_model, i_seed){
   splitted_data_rjmcmc <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=list_params_model$ssplits, iseed=1, typesplit=list_params_model$typesplit, dataset = list_params_model$dataset)
   splitted_data_rjmcmc <- f_prep_prior_logistic(splitted_data_rjmcmc, scale = list_params_model$scale)
   #i_split <-  1
-  
+  #browser()
   # repeat the sampling on one single split
   results_splits <- list()
   results_splits_topmodel_frame <- list()
