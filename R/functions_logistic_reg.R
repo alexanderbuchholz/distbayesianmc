@@ -56,6 +56,8 @@ f_prep_prior_logistic <- function(ssplitlist, scale=1){
     ssplitlist[[isplit]][["scale"]] <- scale*ssplits
     ssplitlist[[isplit]][["Bprior"]] <- Sigma
     ssplitlist[[isplit]][["Bpriorinv"]] <- solve(Sigma)
+    ssplitlist[[isplit]][["ssplits"]] <- ssplits
+    ssplitlist[[isplit]][["isplit"]] <- isplit
   }
   return(ssplitlist)
 }
