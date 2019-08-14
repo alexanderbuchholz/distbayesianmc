@@ -11,14 +11,15 @@ setwd("~/R_programming/distbayesianmc")
 source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
 stan_code <- readChar(fileName, file.info(fileName)$size)
 
-set.seed(i_split)
-x_wait <- rexp(1,1)
-Sys.sleep(x_wait)
+#set.seed(i_split)
+#x_wait <- rexp(1,1)
+#Sys.sleep(x_wait)
 
 mod <- stan_model(model_code = stan_code, auto_write = T)
 #setwd("./sim_results/logistic/")
 setwd("/scratch/alexander/distbayesianmc_higgs/")
-
+print(tempdir())
+print(mod)
 for (dataset in vec_datasets) {
   for (i_iter in 1:iters) {
     dataset_loaded <- f_dataset_loader(dataset)
