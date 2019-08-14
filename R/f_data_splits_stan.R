@@ -163,3 +163,51 @@ f_stan_sampling_splitted_data <- function(mod, splitted_data, dataset, i_seed, i
   save(res_small, file = filename_small)
   return(res_small)
 }
+
+
+f_stan_sampling_single_split <- function(mod, single_split, dataset, i_seed, iter, typesplit, bridgepack=T, typeprior="laplace_normal", nchain=2000, file_identifier=""){
+  # run the stan sampler on a single split, needed for the higgs dataset
+  start_time = Sys.time()
+  
+  res_stan_sampling <- list()
+  
+  ssplits <- single_split$ssplits
+  #browser()
+  alphasubpriorconstant <- ssplits*f_alpha_sub(ssplits = ssplits, Vprior = single_split$Bprior/ssplits, typeprior = typeprior)
+
+  dat <- list(N        = single_split$n,
+              P        = single_split$d,
+              y    = single_split$y,
+              x = single_split$X,
+              sigma = single_split$scale
+  )
+  
+  resStan <- sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
+  interres <- rstan::extract(resStan, pars="beta", permuted=F)
+  
+  
+  bridge_results <- bridge_sampler(samples= resStan, silent = F, stanfit_model = resStan, method = "warp3") 
+  
+  res_stan_sampling[["subposteriorevidence"]] <- bridge_results$logml
+  res_stan_sampling[["subposteriormean"]] <- apply(interres, 3, mean)
+  logsubpost <- bridge_results$logml
+  res_stan_sampling[["subposteriorvariance"]] <- cov(array(interres, c(dim(interres)[1], dim(interres)[3])))
+  betasamples <- array(interres, c(dim(interres)[1], dim(interres)[3]))
+
+  res_small <- list()
+  
+  res_small[["alphasub"]] <- alphasubpriorconstant
+  res_small[["logsubpost"]] <- logsubpost
+  res_small[["normconstcombined_type"]] <- "approx"
+  res_small[["mat_means"]] <- res_stan_sampling[["subposteriormean"]]
+  res_small[["mat_cov"]] <- res_stan_sampling[["subposteriorvariance"]]
+  res_small[["betasamples"]] <- betasamples
+  
+  end_time = Sys.time()
+  timediff <- end_time-start_time
+  res_small[["runtime"]] <- as.numeric(timediff)
+  
+  filename_small <- paste("small_sim_stan_ind_", dataset, "_", ssplits, "_splits_i_split_", single_split$isplit, "_rep_", iter, "_seed_", i_seed, "_", typesplit, file_identifier, ".RData", sep = "") 
+  save(res_small, file = filename_small)
+  return(res_small)
+}
