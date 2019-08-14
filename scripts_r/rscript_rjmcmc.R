@@ -10,9 +10,11 @@ sim_id <- as.numeric(args[1])
 mrep <- 24
 n.mil <- 5
 n.cores <- 1
-dataset <-  "higgs1_large"
+dataset <-  "sim2"
+nobsdata <- 4000
 typesplit <-  "random"
 savestring <-  paste(dataset, typesplit, sep = "_")
+
 
 list_params_model_onesplit <- list(scale =  1,
                                    ssplits =  1,
@@ -21,7 +23,8 @@ list_params_model_onesplit <- list(scale =  1,
                                    mrep = mrep,
                                    n.mil = n.mil, 
                                    n.cores = n.cores, 
-                                   savestring = savestring)
+                                   savestring = savestring, 
+                                   nobsdata = nobsdata)
 
 list_params_model_multisplits1 <- list(scale =  1,
                                        ssplits =  2,
@@ -30,7 +33,8 @@ list_params_model_multisplits1 <- list(scale =  1,
                                        mrep = mrep, 
                                        n.mil = n.mil,
                                        n.cores = n.cores,
-                                       savestring = savestring)
+                                       savestring = savestring,
+                                       nobsdata = nobsdata)
 
 list_params_model_multisplits2 <- list(scale =  1,
                                        ssplits =  3,
@@ -39,7 +43,8 @@ list_params_model_multisplits2 <- list(scale =  1,
                                        mrep = mrep,
                                        n.mil = n.mil,
                                        n.cores = n.cores,
-                                       savestring = savestring)
+                                       savestring = savestring,
+                                       nobsdata = nobsdata)
 
 list_params_model_multisplits3 <- list(scale =  1,
                                        ssplits =  5,
@@ -48,7 +53,8 @@ list_params_model_multisplits3 <- list(scale =  1,
                                        mrep = mrep,
                                        n.mil = n.mil,
                                        n.cores = n.cores,
-                                       savestring = savestring)
+                                       savestring = savestring,
+                                       nobsdata = nobsdata)
 
 list_params_model_multisplits4 <- list(scale =  1,
                                        ssplits =  10,
@@ -57,7 +63,8 @@ list_params_model_multisplits4 <- list(scale =  1,
                                        mrep = mrep,
                                        n.mil = n.mil,
                                        n.cores = n.cores,
-                                       savestring = savestring)
+                                       savestring = savestring,
+                                       nobsdata = nobsdata)
 
 
 list_params_model <- list(list_params_model_onesplit, 
