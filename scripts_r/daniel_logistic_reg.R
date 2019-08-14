@@ -5,13 +5,14 @@ library(distbayesianmc)
 if(T){
   setwd("~/R_programming/distbayesianmc")
   source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
-  setwd("./sim_results/logistic/")
+  #setwd("./sim_results/logistic/")
+  setwd("/scratch/alexander/distbayesianmc_logit/")
   library(doParallel)
-  registerDoParallel(cores=1)
+  registerDoParallel(cores=4)
   for(dataset in vec_datasets){
     for(ssplits in vec_splits){
-      #foreach(iter = 1:iters) %dopar% {
-        for(iter in 1:iters){
+      foreach(iter = 1:iters) %dopar% {
+        #for(iter in 1:iters){
         
         #dataset_loaded <- f_dataset_loader(dataset)
         #splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=iter, typesplit=typesplit)
