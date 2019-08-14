@@ -214,16 +214,20 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     }
     else sigma_x <- diag(nrow = betasize)
     X = matrix(rnorm(n = samplesize*betasize), ncol = betasize)
-    for (n in 1:N) {
+    for (n in 1:samplesize) {
       X[n,] <- mvtnorm::rmvnorm(1, sigma=sigma_x)
     }
     colnames(X) <- paste("X", c(1:betasize), sep="")
-    betacoef = c(-1,1,rep(0, betasize-3),1)
-    prodbeta = X%*%betacoef
+    betacoef1 = c(-1,1,rep(0, betasize-3),1)
+    betacoef2 = c(-1,1,0.5, rep(0, betasize-4),1)
+    #browser()
+    prodbeta1 = X[1:as.integer(samplesize/2),]%*%betacoef1
+    prodbeta2 = X[(as.integer(samplesize/2)+1):samplesize,]%*%betacoef2
+    prodbeta = c(prodbeta1, prodbeta2)
     y = rbinom(samplesize, size= 1, prob=1/(1+exp(-prodbeta)))
     list_data[["X"]] <- X
     list_data[["y"]] <- y
-    list_data[["betastar"]] <- betacoef
+    list_data[["betastar"]] <- list(betacoef1, betacoef2)
     list_data[["dataset"]] <- dataset
   }
   else if (dataset == "flights_simple"){

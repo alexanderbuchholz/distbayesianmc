@@ -218,7 +218,7 @@ f_full_run_rep_rjmcmc <- function(list_params_model){
 }
 
 f_single_run_rep_rjmcmc <- function(list_params_model, i_seed){
-  dataset_loaded <- f_dataset_loader(list_params_model$dataset)
+  dataset_loaded <- f_dataset_loader(list_params_model$dataset, nobs = list_params_model$nobsdata)
   splitted_data_rjmcmc <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=list_params_model$ssplits, iseed=1, typesplit=list_params_model$typesplit, dataset = list_params_model$dataset)
   splitted_data_rjmcmc <- f_prep_prior_logistic(splitted_data_rjmcmc, scale = list_params_model$scale)
   #i_split <-  1
