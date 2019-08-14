@@ -7,28 +7,29 @@ setwd("/scratch/alexander/distbayesianmc_logit/")
 
 df_logistic <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters, type_sim = "stan_")
 df_logistic_exact <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters, type_sim = "")
+df_logistic_reduced <- df_logistic %>% select(normconstcombined, splits, dataset)
+df_logistic_exact_reduced <- df_logistic_exact %>% select(normconstcombined, splits, dataset)
 
+
+df_logistic_exact_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 exact")) %>% mutate(model = replace(model, model=="flights_complex2", "2 exact"))
+
+df_logistic_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 approx")) %>% mutate(model = replace(model, model=="flights_complex2", "2 approx"))
+
+df_all <- rbind(df_logistic_reduced, df_logistic_exact_reduced)
 library(ggplot2)
-rename_dataset <- function(x){ 
-  if(x == "flights_complex1"){
-    "1"
-  }  
-  else {
-    "2"
-    }
-  }
-df_logistic %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1")) %>% mutate(model = replace(model, model=="flights_complex2", "2"))
 
-p1 <- ggplot(df_logistic , aes_string(x="splits", y="normconstcombined", fill="model")) +
+
+
+p1 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined", fill="model")) +
   geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log normalizing constant", title="Estimated normalizing constant \nfor the flights data set") +
   theme(plot.title = element_text(hjust = 0.5, size=20),
         text = element_text(size=20),
         axis.title.x = element_text(size=20),
         axis.title.y = element_text(size=20),
-        )
-ggsave("flightsdata.pdf", plot = p1)
+        ) 
+ggsave("flightsdata.pdf", plot = p1, width = 7, height = 4)
 
-# + theme_gray() 
+ 
 
 
 setwd("~/R_programming/distbayesianmc")
