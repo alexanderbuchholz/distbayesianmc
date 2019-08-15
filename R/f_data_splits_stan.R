@@ -184,7 +184,7 @@ f_stan_sampling_single_split <- function(mod, single_split, dataset, i_seed, ite
   
   resStan <- sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
   interres <- rstan::extract(resStan, pars="beta", permuted=F)
-  print(tempdir())
+  cat(tempdir())
   
   
   bridge_results <- bridge_sampler(samples= resStan, silent = F, stanfit_model = resStan, method = "warp3") 
