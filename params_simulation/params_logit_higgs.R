@@ -20,7 +20,7 @@ Pparams <- 0
 iters <- 20
 
 #vec_datasets <- c("higgs1_full", "higgs2_full")
-vec_datasets <- c("higgs1_large", "higgs2_large")#, "higgs1_full", "higgs2_full")
+vec_datasets <- c("higgs1_small", "higgs2_small")#, "higgs1_full", "higgs2_full")
 #vec_datasets <- c("pima")
 #vec_types_splits <- c(typesplit, "strat_y_cluster")
 vec_types_splits <- c(typesplit)
