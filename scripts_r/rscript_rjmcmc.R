@@ -74,10 +74,14 @@ list_params_model <- list(list_params_model_onesplit,
                           list_params_model_multisplits4)
 
 setwd("/scratch/alexander/distbayesianmc_rjmcmc/")
+library(doParallel)
+registerDoParallel(cores=6)
 for(params_model in list_params_model){
-  set.seed(sim_id)
-  x_wait <- rexp(1,1)
-  Sys.sleep(x_wait)
-  res_sim <- f_single_run_rep_rjmcmc(params_model, sim_id)
+  #set.seed(sim_id)
+  #x_wait <- rexp(1,1)
+  #Sys.sleep(x_wait)
+  foreach(sim_id = 1:iters) %dopar% {
+    res_sim <- f_single_run_rep_rjmcmc(params_model, sim_id)
+  }
   #save(res_sim, file = paste("res_split_id", sim_id, "_splits_", params_model$ssplits, ".RData", sep = ""))
 }
