@@ -30,6 +30,8 @@ for (dataset in vec_datasets) {
           },
           error = function(err) {
             print("Try exception: recompile model and run again")
+            source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
+            stan_code <- readChar(fileName, file.info(fileName)$size)
             mod <- stan_model(model_code = stan_code)
             print("compiled, now running")
             f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
