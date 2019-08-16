@@ -8,7 +8,7 @@ print(args)
 sim_id <- as.numeric(args[1])
 
 mrep <- 24
-n.mil <- 5
+n.mil <- 2
 n.cores <- 1
 dataset <-  "sim2"
 nobsdata <- 4000
