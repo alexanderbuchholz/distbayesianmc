@@ -17,7 +17,7 @@ stan_code <- readChar(fileName, file.info(fileName)$size)
 
 mod <- stan_model(model_code = stan_code)#, auto_write = T)
 #setwd("./sim_results/logistic/")
-#setwd("/scratch/alexander/distbayesianmc_higgs/")
+setwd("/scratch/alexander/distbayesianmc_higgs/")
 print(tempdir())
 #print(mod)
 for (dataset in vec_datasets) {
