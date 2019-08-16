@@ -228,7 +228,15 @@ f_single_run_rep_rjmcmc <- function(list_params_model, i_seed){
   results_splits <- list()
   results_splits_topmodel_frame <- list()
   for(i_split in 1:list_params_model$ssplits){
-    results_topmodels_parallel <- f_repeat_rjmcmc_sampling(1, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, savestring = list_params_model$savestring, i_seed = i_seed)
+    tryCatch({
+      results_topmodels_parallel <- f_repeat_rjmcmc_sampling(1, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, savestring = list_params_model$savestring, i_seed = i_seed) 
+    },
+    error=function(cond) {
+      results_topmodels_parallel <- f_repeat_rjmcmc_sampling(1, splitted_data_rjmcmc, i_split = i_split, n.mil = list_params_model$n.mil, savestring = list_params_model$savestring, i_seed = i_seed) 
+      
+    }
+    )
+    
     #results_splits[[i_split]] <- results_topmodels_parallel
     #df_sim_res <- f_combine_topmodels_in_df(results_topmodels_parallel)
     #df_sim_res[["split"]] <- i_split
