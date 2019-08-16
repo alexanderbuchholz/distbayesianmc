@@ -18,15 +18,24 @@ stan_code <- readChar(fileName, file.info(fileName)$size)
 mod <- stan_model(model_code = stan_code, auto_write = T)
 #setwd("./sim_results/logistic/")
 setwd("/scratch/alexander/distbayesianmc_higgs/")
-cat(tempdir())
+print(tempdir())
 #print(mod)
 for (dataset in vec_datasets) {
   for (i_iter in 1:iters) {
     dataset_loaded <- f_dataset_loader(dataset)
     splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
     splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
-    f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
-    cat(tempdir())
+    tryCatch({
+          f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
+          },
+          error = function(err) {
+            mod <- stan_model(model_code = stan_code, auto_write = T)
+            print("Try exception: recompile model and run again")
+            f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
+            
+          }
+        )
+    print(tempdir())
   }
 }
 
