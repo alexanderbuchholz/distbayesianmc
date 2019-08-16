@@ -29,7 +29,7 @@ for (dataset in vec_datasets) {
           f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
           },
           error = function(err) {
-            mod <- stan_model(model_code = stan_code, auto_write = T)
+            mod <- stan_model(model_code = stan_code)
             print("Try exception: recompile model and run again")
             f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
             
