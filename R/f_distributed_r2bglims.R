@@ -13,7 +13,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
   beta.priors <- cbind(rep(0, pvars-1), rep(splitted_data_rjmcmc[[i_split]]$scale, pvars-1))
   row.names(beta.priors) <- predictors
   rjmcmc.results <- R2BGLiMS(
-    save.path = "./tmp/",
+    #save.path = "./tmp",
     likelihood="Logistic",
     data=data,
     outcome.var="outcome",
