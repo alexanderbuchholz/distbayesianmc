@@ -3,8 +3,8 @@ library(distbayesianmc)
 #task_id_string <- Sys.getenv("SLURM_ARRAY_TASK_ID")
 #task_id <- as.numeric(task_id_string)
 
-mrep <- 20
-n.mil <- 6
+mrep <- 40
+n.mil <- 10
 n.cores <- 1
 dataset <-  "sim2"
 nobsdata <- 4000
