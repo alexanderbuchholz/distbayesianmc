@@ -1,5 +1,7 @@
 # analyse results
 library(distbayesianmc)
+library(gridExtra)
+library(grid)
 setwd("~/R_programming/distbayesianmc")
 source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
 #setwd("./sim_results/logistic/") # use this for the pima dataset
@@ -26,9 +28,39 @@ p1 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined", fill="model"
         text = element_text(size=20),
         axis.title.x = element_text(size=20),
         axis.title.y = element_text(size=20),
-        ) 
-ggsave("flightsdata.pdf", plot = p1, width = 7, height = 4)
+        )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0"))
 
+
+
+
+
+p2 <- ggplot(df_all  %>% filter(model != "2 exact") %>% filter(splits != "100")  , aes_string(x="splits", y="normconstcombined", fill="model")) +
+  geom_boxplot() +  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5, size=20),
+        text = element_text(size=10),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none"
+  ) + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9"))
+
+
+
+g2 <- ggplotGrob(p2)
+
+p3 = p1 + annotation_custom(grob = g2, xmin = 0.5, xmax = 4, ymin=-190000, ymax=-162000)
+ggsave("flightsdata.pdf", plot = p3, width = 7, height = 4)
+plot(p3)
+
+
+library(gridExtra)
+library(grid)
+
+t1 = arrangeGrob(g1,ncol=1, left = textGrob("A", y = 1, vjust=1, gp=gpar(fontsize=20)))
+t2 = arrangeGrob(g2,ncol=1, left = textGrob("B", y = 1, vjust=1, gp=gpar(fontsize=20)))
+
+
+final = arrangeGrob(t1,t2, layout_matrix = cbind(c(1,2), c(3,3)))
+grid.arrange(final)
  
 
 
