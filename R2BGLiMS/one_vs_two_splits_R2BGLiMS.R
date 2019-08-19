@@ -39,20 +39,6 @@ df_single_split <- res_onesplit$df_sim_res_all
 #df2 <- res_twosplits$df_sim_res_all
 #keys <- df1[df1$counter_sim==1,]$key_model
 
-f_intersection_keys <- function(splits, df, df_single_split = ""){
-  #browser()
-  keys_per_split1 <- df %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
-  common_keys <- intersect(keys_per_split1, keys_per_split1)  
-  if(df_single_split != ""){
-    keys_per_split_single_split <- df_single_split %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
-    common_keys <- intersect(keys_per_split1, keys_per_split_single_split)  
-  }
-  for(i_split in 2:splits){
-    keys_per_split_i <- df %>% filter(counter_sim == 1, split==i_split) %>% dplyr::select(key_model)
-    common_keys <- intersect(common_keys, keys_per_split_i)    
-  }
-  return(common_keys)
-}
 
 
 

@@ -260,6 +260,7 @@ f_filter_rows_mcmc_rjmcmc_output <- function(mcmc_output, topmodel_res, key_mode
 
 f_summary_stats_per_split <- function(key, res_split_list){
   results_splits <- res_split_list$results_splits
+  #results_splits <- res_split_list
   splits <- length(results_splits)
   mrep <- length(results_splits[[1]])
   summary_stats_list <- list()
@@ -273,6 +274,7 @@ f_summary_stats_per_split <- function(key, res_split_list){
     mat_cov <- array(0, dim=c(pvars, pvars, splits))
     summary_stats_list[[i_rep]] <- list()
     # loop over the splits
+    #browser()
     for(i_split in 1:splits){
       mcmc_output_inter <- f_filter_rows_mcmc_rjmcmc_output(results_splits[[i_split]][[i_rep]]$mcmc_ouput, results_splits[[i_split]][[i_rep]]$topmodel_res, key) 
       mat_means[i_split,] <- colMeans(mcmc_output_inter)
@@ -298,7 +300,7 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
   df2 <- res_several_splits$df_sim_res_all
   
   bfseveralsplits <- rep(0, mrep)
-  browser()
+  #browser()
   for(i_rep in 1:mrep){
     # single split
     #browser()
@@ -310,9 +312,9 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
     M2dim <- sum(unlist(strsplit(key2, "")) == "1") + 1 # number of variables
     fulldim_no_intercept <- nchar(key1)
     
-    df2 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% dplyr::select(Post.Prob, split, key_model)
-    df2_key1 <- df2 %>% filter(key_model == key1) %>% filter(counter_sim == 1) %>% dplyr::select(Post.Prob, split)
-    df2_key2 <- df2 %>% filter(key_model == key2) %>% filter(counter_sim == 1) %>% dplyr::select(Post.Prob, split)
+    #df2 %>% filter(key_model == key1 | key_model == key2) %>% filter(counter_sim == i_rep) %>% dplyr::select(Post.Prob, split, key_model)
+    df2_key1 <- df2 %>% filter(key_model == key1) %>% filter(counter_sim == i_rep) %>% dplyr::select(Post.Prob, i_split)
+    df2_key2 <- df2 %>% filter(key_model == key2) %>% filter(counter_sim == i_rep) %>% dplyr::select(Post.Prob, i_split)
     bfsplits <- df2_key1$Post.Prob/df2_key2$Post.Prob
     
     log_alpha_key1 <- list_params_model_multisplits$ssplits*f_alpha_sub(ssplits = list_params_model_multisplits$ssplits, Vprior = diag(rep(list_params_model_multisplits$scale, M1dim)), typeprior = "normal")
@@ -334,5 +336,22 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
   return(list(bfonesplit=bfonesplit, bfseveralsplits=bfseveralsplits))
   
   
+}
+
+
+f_intersection_keys <- function(splits, df, df_single_split = ""){
+  
+  keys_per_split1 <- df %>% filter(counter_sim == 1, i_split==1) %>% dplyr::select(key_model)
+  common_keys <- intersect(keys_per_split1, keys_per_split1)  
+  if(df_single_split != ""){
+    keys_per_split_single_split <- df_single_split %>% filter(counter_sim == 1, split==1) %>% dplyr::select(key_model)
+    common_keys <- intersect(keys_per_split1, keys_per_split_single_split)  
+  }
+  #browser()
+  for(i_split in 2:splits){
+    keys_per_split_i <- df %>% filter(counter_sim == 1, i_split==i_split) %>% dplyr::select(key_model)
+    common_keys <- intersect(common_keys, keys_per_split_i)    
+  }
+  return(common_keys)
 }
 
