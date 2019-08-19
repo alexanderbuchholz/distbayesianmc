@@ -54,7 +54,7 @@ for (params_model in list_params_model){
   keys_intersect <- intersect(common_keys_single, common_keys_multisplit)
 }
 
-combos <- list(c(1,2), c(2,3), c(3,4), c(2,3), c(2,4), c(3,4))
+combos <- list(c(1,2), c(2,3), c(3,4), c(1,3), c(2,4), c(1,4))
 list_res <- list()
 counter_combs <- 0
 for(model_comb in combos){
@@ -90,6 +90,17 @@ for(model_comb in combos){
 frames_different_models <- do.call(rbind, list_res)
 library(ggplot2)
 frames_different_models %<>% mutate(ssplits = as.character(splits))
-bp <- ggplot(frames_different_models, aes(y=BF, x=splits, group=splits)) + 
-  geom_boxplot() + facet_wrap(. ~ model, ncol=2)
-bp
+
+frames_different_models$ssplits <- factor(frames_different_models$ssplits, levels = vec_splits, ordered = TRUE)
+bp <- ggplot(frames_different_models, aes(y=BF, x=ssplits, group=splits)) + 
+  geom_boxplot() + facet_wrap(. ~ model, ncol=3) +  theme_minimal() +  
+  labs(fill = "Model", y = "log Bayes factor", x = "# splits", title="log Bayes factors accross \n different splits and models") +
+  theme(plot.title = element_text(hjust = 0.5, size=20),
+        text = element_text(size=20),
+        axis.title.x = element_text(size=20),
+        axis.title.y = element_text(size=20),
+  ) 
+
+#bp
+
+ggsave(filename = "rjmcmc.pdf", plot = bp, width = 7, height = 4)

@@ -4,7 +4,7 @@ library(distbayesianmc)
 #task_id <- as.numeric(task_id_string)
 
 mrep <- 20
-n.mil <- 2
+n.mil <- 6
 n.cores <- 1
 dataset <-  "sim2"
 nobsdata <- 4000
