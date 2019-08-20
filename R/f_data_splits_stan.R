@@ -23,7 +23,7 @@ f_stan_sampling_splitted_data_logistic <- function(mod, splitted_data, dataset, 
     #resStan <- stan(model_code = stan_code, data = dat,
     #                chains = 1, iter = 3000, warmup = 500, thin = 1, auto_write=T)
     
-    resStan <- sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
+    resStan <- rstan::sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
     interres <- rstan::extract(resStan, pars="beta", permuted=F)
     
     if(epapprox){
@@ -100,7 +100,7 @@ f_stan_sampling_splitted_data <- function(mod, splitted_data, dataset, i_seed, i
     #resStan <- stan(model_code = stan_code, data = dat,
     #                chains = 1, iter = 3000, warmup = 500, thin = 1, auto_write=T)
     res_stan_sampling
-    resStan <- sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
+    resStan <- rstan::sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
     interres <- rstan::extract(resStan, pars="beta", permuted=F)
     
     
@@ -182,7 +182,7 @@ f_stan_sampling_single_split <- function(mod, single_split, dataset, i_seed, ite
               sigma = single_split$scale
   )
   
-  resStan <- sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
+  resStan <- rstan::sampling(mod, data = dat, chains = 1, iter = nchain, warmup = nchain*0.2, thin = 1, seed = i_seed)
   interres <- rstan::extract(resStan, pars="beta", permuted=F)
   cat(tempdir())
   

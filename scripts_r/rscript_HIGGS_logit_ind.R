@@ -9,13 +9,21 @@ ssplits <- as.integer(args[2]) # how many splits?
 
 setwd("~/R_programming/distbayesianmc")
 source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
-stan_code <- readChar(fileName, file.info(fileName)$size)
+
 
 #set.seed(i_split)
 #x_wait <- rexp(1,1)
 #Sys.sleep(x_wait)
-
-mod <- stan_model(model_code = stan_code)#, auto_write = T)
+if (F) {
+  # compile the model on every run
+  stan_code <- readChar(fileName, file.info(fileName)$size)
+  mod <- rstan::stan_model(model_code = stan_code)#, auto_write = T)
+}
+if (T) {
+  # use a precompiled model
+  rstan::rstan_options(auto_write = TRUE)
+  mod <- readRDS(file = "~/R_programming/distbayesianmc/stan_models/fit_logistic.rds")
+}
 #setwd("./sim_results/logistic/")
 setwd("/scratch/alexander/distbayesianmc_higgs/")
 print(tempdir())
@@ -34,7 +42,7 @@ for (dataset in vec_datasets) {
             print(fileName)
             stan_code <- readChar(fileName, file.info(fileName)$size)
             print(stan_code)
-            mod <- stan_model(model_code = stan_code, save_dso=FALSE)
+            mod <- rstan::stan_model(model_code = stan_code, save_dso=FALSE)
             print("compiled, now running")
             f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
             print("Run finished")
