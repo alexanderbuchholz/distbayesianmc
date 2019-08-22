@@ -78,8 +78,11 @@ for (dataset in vec_datasets) {
   print(list.files(tempdir()))
   tryCatch({
     f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
+    line <-  paste("completed, ", sim_id, ", ", dataset, sep = "")
+    write(line, file = "status_sim.txt", append = TRUE)
+    
   }, error = function(err) { 
-    line <-  paste("failed, ", sim_id, sep = "")
+    line <-  paste("failed, ", sim_id, ", ", dataset, sep = "")
     write(line, file = "status_sim.txt", append = TRUE)
     
     })
@@ -110,5 +113,3 @@ for (dataset in vec_datasets) {
   # }
 }
 
-line <-  paste("completed, ", sim_id, sep = "")
-write(line, file = "status_sim.txt", append = TRUE)
