@@ -26,4 +26,4 @@ vec_datasets <- c("hla_small")
 vec_types_splits <- c(typesplit)
 
 # multiple simulations
-vec_splits <- c(10,20,30,50)#,10,20,50)
+vec_splits <- c(1,5,10,20)#,30,50)#,10,20,50)
