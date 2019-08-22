@@ -21,9 +21,9 @@ highcorr <- TRUE
 Pparams <- 2
 
 iters <- 10
-vec_datasets <- c("sparse_reg_1", "sparse_reg_2")
-#vec_datasets <- c(dataset)
+#vec_datasets <- c("sparse_reg_1", "sparse_reg_2")
+vec_datasets <- c("hla_small")
 vec_types_splits <- c(typesplit)
 
 # multiple simulations
-vec_splits <- c(1,2,3,5)#,10,20,50)
+vec_splits <- c(10,20,30,50)#,10,20,50)

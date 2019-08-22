@@ -57,14 +57,14 @@ if(T){
   source("~/R_programming/distbayesianmc/params_simulation/params_sparse.R")
   stan_code <- readChar(fileName, file.info(fileName)$size)
   
-  mod <- stan_model(model_code = stan_code, auto_write = T)
-  setwd("./sim_results/sparse_linear/")
-  library(doParallel)
-  registerDoParallel(cores=6)
+  mod <- rstan::stan_model(model_code = stan_code, auto_write = T)
+  setwd("/scratch/alexander/distbayesianmc_sparselinear/")
+  #library(doParallel)
+  #registerDoParallel(cores=6)
   for(dataset in vec_datasets){
     for(ssplits in vec_splits){
-      foreach(iter = 1:iters) %dopar% {
-        #for(iter in 1:20){
+      #foreach(iter = 1:iters) %dopar% {
+        for(iter in 1:20){
         
         dataset_loaded <- f_dataset_loader(dataset, highcorr = highcorr, nobs = nobs)
         splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, Pparams = Pparams, ssplits=ssplits, iseed=iter, typesplit=typesplit)

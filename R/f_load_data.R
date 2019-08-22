@@ -96,6 +96,51 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     #list_data[["dataset"]] <- dataset
     
   }
+  else if (dataset == "hla"){
+    if( F ) {
+      # preprocessing the data, only to run once
+      df_genotypes <- read.csv("/project/wtccc/ILIKE/hla_common_additive0.8.tsv/hla_common_additive0.8.tsv", header = T, sep = "")
+      df_genotypes <- df_genotypes %>% select(-c("NA.", "NA..1"))
+      df_outcome <- read.csv("/project/wtccc/ILIKE/hla_for_daniel/ukbb_ukbil_merged.sample", header = T, sep = "", stringsAsFactors = F)
+      write.csv(df_genotypes, file = "/scratch/alexander/hladata/hla_genotypes_full.csv")
+      
+      df_outcome = df_outcome[-1,]
+      df_outcome <- df_outcome %>% mutate(mcv_gwas_normalised = as.numeric(mcv_gwas_normalised))
+      #df_genotypes <- df_genotypes %>% select(-c("NA.", "NA..1"))
+      df_genotypes[['mcv_gwas_normalised']] <- df_outcome$mcv_gwas_normalised
+      write.csv(df_genotypes, file = "/scratch/alexander/hladata/hla_genotypes_full_outcome.csv")
+      
+      df_genotypes <- df_genotypes %>% sample_frac(0.1)
+      
+      write.csv(df_genotypes, file = "/scratch/alexander/hladata/hla_genotypes_frac_outcome.csv")
+      
+      df_genotypes <- df_genotypes %>% drop_na()
+      ncol <- dim(df_genotypes)[2]
+      selector_rows <- (runif(ncol-1) < 0.1)
+      df_genotypes_small <- df_genotypes[,which(c(selector_rows, T),T)]
+      # corr_vec <- rep(0,ncol-1)
+      # for(i in 1:(ncol-1)){
+      #   corr_vec[i] <- cor(df_genotypes[,i], df_genotypes[,ncol])
+      # }
+      write.csv(df_genotypes_small, file = "/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv")
+      genenames <- colnames(df_genotypes_small)[1:(dim(df_genotypes_small)[2]-1)]
+      reg1 <- lm(as.formula(paste("mcv_gwas_normalised~", paste(genenames, collapse="+"))), df_genotypes_small)
+      library(glmnet)
+      
+  
+    }
+    
+    
+  }
+  else if (dataset == "hla_small"){
+    df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_small <- df_small %>% dplyr::select(-c("X"))
+    y <- df_small$mcv_gwas_normalised
+    X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
+    list_data[["X"]] <- X # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+  }
   else if (dataset == "higgs1"){
     # subset of the higgs data set
     df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
