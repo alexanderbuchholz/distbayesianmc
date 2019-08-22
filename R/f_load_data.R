@@ -152,6 +152,50 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     list_data[["y"]] <- y
     list_data[["dataset"]] <- dataset
   }
+  else if (dataset == "hla_ultra_small1"){
+    df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_small <- df_small %>% dplyr::select(-c("X"))
+    nsamples <- 10000
+    y <- df_small$mcv_gwas_normalised[1:nsamples]
+    X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
+    X <- X[1:nsamples,]
+    ncol <- dim(X)[2]
+    nrow <- dim(X)[1]
+    corr_vec <- rep(0,ncol)
+    for(i in 1:(ncol)){
+      corr_vec[i] <- cor(X[,i], y)
+    }
+    sort_res <- sort(log(abs(corr_vec)), decreasing = T, index.return=T)
+    X_reduced <- X[,sort_res$ix[1:20]]
+    X_reduced <- cbind(rep(1,nrow), X_reduced)
+    colnames(X_reduced)[1] <- "intercept"
+    list_data[["X"]] <- X_reduced # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+  }
+  else if (dataset == "hla_ultra_small2"){
+    df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_small <- df_small %>% dplyr::select(-c("X"))
+    nsamples <- 10000
+    y <- df_small$mcv_gwas_normalised[1:nsamples]
+    X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
+    X <- X[1:nsamples,]
+    ncol <- dim(X)[2]
+    nrow <- dim(X)[1]
+    corr_vec <- rep(0,ncol)
+    for(i in 1:(ncol)){
+      corr_vec[i] <- cor(X[,i], y)
+    }
+    sort_res <- sort(log(abs(corr_vec)), decreasing = T, index.return=T)
+    X_reduced <- X[,sort_res$ix[1:40]]
+    X_reduced <- cbind(rep(1,nrow), X_reduced)
+    colnames(X_reduced)[1] <- "intercept"
+    list_data[["X"]] <- X_reduced # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+  }
   else if (dataset == "higgs1"){
     # subset of the higgs data set
     df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)

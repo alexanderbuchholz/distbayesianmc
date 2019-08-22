@@ -63,13 +63,13 @@ if(T){
   registerDoParallel(cores=6)
   for(dataset in vec_datasets){
     for(ssplits in vec_splits){
-      foreach(iter = 1:iters) %dopar% {
-        #for(iter in 1:20){
+      foreach(i_iter = 1:iters) %dopar% {
+        #for(i_iter in 1:20){
         
         dataset_loaded <- f_dataset_loader(dataset, highcorr = highcorr, nobs = nobs)
-        splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, Pparams = Pparams, ssplits=ssplits, iseed=iter, typesplit=typesplit)
+        splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, Pparams = Pparams, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
         splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
-        f_stan_sampling_splitted_data(mod, splitted_data, dataset = dataset, i_seed = iter, iter = iter, typesplit = typesplit, nchain = nchain, typeprior=typeprior)
+        f_stan_sampling_splitted_data(mod, splitted_data, dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior=typeprior)
         
         
         
