@@ -31,14 +31,44 @@ setwd("/scratch/alexander/distbayesianmc_higgs/")
 print(tempdir())
 #print(mod)
 
-sim_id <- 1
-sim_id <- 498
-sim_id <- 500
-i_iter <- as.integer(sim_id / ssplits) + 1 # returns the iteration number (in thousands or hundreds)
-i_split <- (sim_id) - (i_iter-1)*ssplits# returns the current split 
+# delete this again! 
+#sim_id <- 1
+#sim_id <- 498
+#sim_id <- 500
+#ssplits <-500
+  
 
-i_iter
-i_split
+f_i_iter <- function(sim_id, ssplits){
+  # returns the iteration number (in thousands or hundreds)
+  if(sim_id %% ssplits == 0){
+    return((sim_id %/% ssplits))
+  }
+  else{
+    return( (sim_id %/% ssplits) + 1)
+  }
+}
+f_split_number <- function(sim_id, ssplits) {
+  # function that returns the ssplit number
+  if (sim_id <= ssplits){
+    return(sim_id)
+  }
+  else {
+    if((sim_id %% ssplits)==0){
+      return(ssplits)
+    }
+    else{
+      return((sim_id %% ssplits))
+    }
+    
+  }
+}
+
+i_split <- f_split_number(sim_id, ssplits)
+i_iter <- f_i_iter(sim_id, ssplits)
+
+# for testing
+#sapply(X = c(1:200), FUN = function(x) f_split_number(x, 20))
+#sapply(X = c(1:100), FUN = function(x) f_i_iter(x, 20)) == 1
 
 for (dataset in vec_datasets) {
   dataset_loaded <- f_dataset_loader(dataset)
