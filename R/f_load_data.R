@@ -134,10 +134,21 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "hla_small"){
     df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
     df_small <- df_small %>% dplyr::select(-c("X"))
     y <- df_small$mcv_gwas_normalised
     X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
-    list_data[["X"]] <- X # remove the last observation here
+    ncol <- dim(X)[2]
+    nrow <- dim(X)[1]
+    corr_vec <- rep(0,ncol-1)
+    for(i in 1:(ncol)){
+       corr_vec[i] <- cor(X[,i], y)
+    }
+    sort_res <- sort(log(abs(corr_vec)), decreasing = T, index.return=T)
+    X_reduced <- X[,sort_res$ix[1:50]]
+    X_reduced <- cbind(rep(1,nrow), X_reduced)
+    colnames(X_reduced)[1] <- "intercept"
+    list_data[["X"]] <- X_reduced # remove the last observation here
     list_data[["y"]] <- y
     list_data[["dataset"]] <- dataset
   }
