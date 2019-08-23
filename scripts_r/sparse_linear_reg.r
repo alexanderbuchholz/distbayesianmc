@@ -81,3 +81,34 @@ if(T){
 df <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters)
 #f_plot_res_data_frame(df)
 f_plot_res_data_frame(df, vec_datasets = vec_datasets)
+
+
+if(F){
+  df_reduced <- df %>% select(c(normconstcombined, iter, splits, dataset))
+  
+  
+  true_mean <- df_reduced %>% filter(splits == 1)  %>% group_by(splits, dataset) %>% summarise(true_mean = mean(normconstcombined))
+  sd_one_split <- df_reduced %>% filter(splits == 1)  %>% group_by(splits, dataset) %>% summarise(std = var(normconstcombined)**0.5)
+  
+  df_reduced <- df_reduced %>% mutate(true_mean = ifelse(dataset ==  vec_datasets[1], (true_mean %>% filter(dataset ==  vec_datasets[1]))$true_mean, 
+                                                         ifelse(dataset ==  vec_datasets[2], (true_mean %>% filter(dataset ==  vec_datasets[2]))$true_mean, NA)))
+  
+  df_reduced <- df_reduced %>% mutate(sqerror = (true_mean-normconstcombined)**2)
+  
+  df_true_means <- df_reduced %>% group_by(splits, dataset) %>% summarise(true_mean_all = mean(true_mean))
+  
+  average_error <- df_reduced %>% group_by(splits, dataset) %>% summarise(MSE = mean(sqerror)) %>% mutate(srerror = round(MSE**0.5, 3))
+  
+  average_error[['percenterror']] <- round((average_error$srerror/df_true_means$true_mean_all*100), 4)
+  
+  average_error
+  
+  write.table(t(as.matrix(
+    average_error %>% filter(dataset == vec_datasets[1]) %>% select(splits, srerror, percenterror) 
+  )), "table1.txt", quote=FALSE, eol="\\\\\n", sep=" & ")
+  
+  write.table(t(as.matrix(
+    average_error %>% filter(dataset == vec_datasets[2]) %>% select(splits, srerror, percenterror) 
+  )), "table2.txt", quote=FALSE, eol="\\\\\n", sep=" & ")
+  
+}
