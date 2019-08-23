@@ -94,5 +94,5 @@ f_plot_res_data_frame <- function(df, vec_datasets = NA, vec_types_splits = NA){
   p1 <-  p1 + theme(text = element_text(size=20)) +
     scale_y_continuous(trans=weird)
   
-  ggsave(f_name, plot=p1, device = pdf())
+  ggsave(f_name, plot=p1, device = pdf(), width = 7, height = 4)
 }
