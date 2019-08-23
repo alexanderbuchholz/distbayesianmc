@@ -130,7 +130,60 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   
     }
     
+    if(F){
+    df_full <- read.csv("/scratch/alexander/hladata/hla_genotypes_full_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_full <- df_full %>% dplyr::select(-c("X")) %>% drop_na()
     
+    #y <- df_full$mcv_gwas_normalised
+    #X <- as.matrix(df_full %>% dplyr::select(-c("mcv_gwas_normalised")))
+
+    ncol <- dim(df_full)[2]-1
+    nrow <- dim(df_full)[1]
+    
+    corr_vec <- rep(0,ncol)
+    for(i in 1:(ncol)){
+      corr_vec[i] <- cor(df_full[,i], df_full$mcv_gwas_normalised)
+    }
+    sort_res <- sort(log(abs(corr_vec)), decreasing = T, index.return=T)
+    X_reduced1 <- df_full[,sort_res$ix[1:50]]
+    X_reduced1 <- cbind(rep(1,nrow), X_reduced1)
+    colnames(X_reduced1)[1] <- "intercept"
+    X_reduced1[["mcv_gwas_normalised"]] <- df_full$mcv_gwas_normalised
+    write.csv(X_reduced1, file = "/scratch/alexander/hladata/hla_1.csv")
+    
+    X_reduced2 <- df_full[,sort_res$ix[1:100]]
+    X_reduced2 <- cbind(rep(1,nrow), X_reduced2)
+    colnames(X_reduced2)[1] <- "intercept"
+    X_reduced2[["mcv_gwas_normalised"]] <- df_full$mcv_gwas_normalised
+    write.csv(X_reduced2, file = "/scratch/alexander/hladata/hla_2.csv")
+    
+    list_data[["X"]] <- X_reduced # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+    }
+    
+  }
+  else if (dataset == "hla1"){
+    df_small <- read.csv("/scratch/alexander/hladata/hla_1.csv", header = T, sep = ",", stringsAsFactors = F)
+    #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_small <- df_small %>% dplyr::select(-c("X"))
+    y <- df_small$mcv_gwas_normalised
+    X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
+    
+    list_data[["X"]] <- X # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
+  }
+  else if (dataset == "hla2"){
+    df_small <- read.csv("/scratch/alexander/hladata/hla_2.csv", header = T, sep = ",", stringsAsFactors = F)
+    #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    df_small <- df_small %>% dplyr::select(-c("X"))
+    y <- df_small$mcv_gwas_normalised
+    X <- as.matrix(df_small %>% dplyr::select(-c("mcv_gwas_normalised")))
+    
+    list_data[["X"]] <- X # remove the last observation here
+    list_data[["y"]] <- y
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "hla_small"){
     df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
