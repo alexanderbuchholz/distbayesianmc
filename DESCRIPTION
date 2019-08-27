@@ -8,7 +8,7 @@ Description: This package allows distributed Bayesian model choice using rstan a
 License: MIT License
 Encoding: UTF-8
 LazyData: true
-Depends: MASS, BayesLogit, EPGLM, ggplot2, dplyr, magrittr, gridExtra, nycflights13, sjmisc, mvtnorm, boot, bridgesampling, car, stats, pgdraw, testit, rstan, tidyverse, R2BGLiMS
+Depends: MASS, BayesLogit, EPGLM, ggplot2, dplyr, magrittr, gridExtra, nycflights13, sjmisc, mvtnorm, boot, bridgesampling, car, stats, pgdraw, testit, rstan, tidyverse
 LinkingTo: Rcpp
 Suggests: 
     testthat
