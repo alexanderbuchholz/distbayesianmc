@@ -57,7 +57,7 @@ f_sim_sparse_data <- function(nobs, highcorr=F){
   return(list_data)
   
 }
-f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
+f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=F){
   list_data <- list()
   if(dataset == "pima"){
     data_pima = rbind(Pima.tr, Pima.te)
@@ -164,7 +164,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     
   }
   else if (dataset == "hla1"){
-    df_small <- read.csv("/scratch/alexander/hladata/hla_1.csv", header = T, sep = ",", stringsAsFactors = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/hladata/hla_1.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df_small <- read.csv("/scratch/alexander/hladata/hla_1.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    
     #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
     df_small <- df_small %>% dplyr::select(-c("X"))
     y <- df_small$mcv_gwas_normalised
@@ -175,7 +181,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     list_data[["dataset"]] <- dataset
   }
   else if (dataset == "hla2"){
-    df_small <- read.csv("/scratch/alexander/hladata/hla_2.csv", header = T, sep = ",", stringsAsFactors = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/hladata/hla_2.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df_small <- read.csv("/scratch/alexander/hladata/hla_2.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    
     #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
     df_small <- df_small %>% dplyr::select(-c("X"))
     y <- df_small$mcv_gwas_normalised
@@ -206,7 +218,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     list_data[["dataset"]] <- dataset
   }
   else if (dataset == "hla_ultra_small1"){
-    df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    
     #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
     df_small <- df_small %>% dplyr::select(-c("X"))
     nsamples <- 10000
@@ -228,7 +246,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
     list_data[["dataset"]] <- dataset
   }
   else if (dataset == "hla_ultra_small2"){
-    df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df_small <- read.csv("/scratch/alexander/hladata/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    
     #df_small <- read.csv("~/R_programming/exchange_files_server/hla_genotypes_subset_frac_outcome.csv", header = T, sep = ",", stringsAsFactors = F)
     df_small <- df_small %>% dplyr::select(-c("X"))
     nsamples <- 10000
@@ -262,7 +286,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs1_full"){
     # subset of the higgs data set
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
+    }
+    
     samplesize = dim(df)[1]
     X = cbind(rep(1, samplesize), df[,23:29])
     colnames(X)[1] <- "V1"
@@ -273,7 +303,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs1_small"){
     # subset of the higgs data set
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
+    }
+    
     #samplesize = dim(df)[1]
     samplesize = 10000
     X = cbind(rep(1, samplesize), df[1:samplesize,23:29])
@@ -285,7 +321,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs1_large"){
     # subset of the higgs data set, 10**5 lines
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
+    }
+    
     samplesize = dim(df)[1]
     X = cbind(rep(1, samplesize), df[,23:29])
     colnames(X)[1] <- "V1"
@@ -296,7 +338,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs2_large"){
     # subset of the higgs data set, 10**5 lines
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
+    }
+    
     samplesize = dim(df)[1]
     X = cbind(rep(1, samplesize), df[,2:22])
     colnames(X)[1] <- "V1"
@@ -307,7 +355,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs2_small"){
     # subset of the higgs data set, 10**5 lines
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
+    }
+    
     samplesize = 10000
     X = cbind(rep(1, samplesize), df[,2:22])
     colnames(X)[1] <- "V1"
@@ -318,7 +372,13 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T){
   }
   else if (dataset == "higgs2_full"){
     # subset of the higgs data set
-    df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
+    if(server){
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = T, sep = ",", stringsAsFactors = F)
+    }
+    else{
+      df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
+    }
+    
     samplesize = dim(df)[1]
     X = cbind(rep(1, samplesize), df[,2:22])
     colnames(X)[1] <- "V1"
