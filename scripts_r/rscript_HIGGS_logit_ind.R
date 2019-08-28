@@ -28,7 +28,7 @@ if (F) {
 }
 #setwd("./sim_results/logistic/")
 if( Sys.info()[["user"]] == "ab2603" ){
-  setwd("/mrc-bsu/scratch/ab2630/distbayesianmc_higgs/")
+  setwd("/mrc-bsu/scratch/ab2603/distbayesianmc_higgs/")
   server_ind = T
 } else {
   setwd("/scratch/alexander/distbayesianmc_higgs/")
