@@ -20,7 +20,7 @@ highcorr <- TRUE
 
 Pparams <- 2
 
-iters <- 10
+iters <- 20
 #vec_datasets <- c("sparse_reg_1", "sparse_reg_2")
 vec_datasets <- c("hla1", "hla2")
 vec_types_splits <- c(typesplit)
