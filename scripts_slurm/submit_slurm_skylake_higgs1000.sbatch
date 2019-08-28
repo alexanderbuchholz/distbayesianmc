@@ -6,14 +6,14 @@
 #SBATCH -A mrc-bsu-sl2-cpu
 #SBATCH -p skylake-himem
 #SBATCH -n 1              # on one node
-#SBATCH -t 2:00:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
+#SBATCH -t 24:00:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
 
 ## 1000 splits, 20 repetitions
 
-#SBATCH --array=1-20000%100
+#SBATCH --array=1-1000
 
 #SBATCH --mail-type=FAIL
-#SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/output.%a.out # STDOUT
+#SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/slurm-%A_%a.out # STDOUT
 
 
 export TMPDIR=/mrc-bsu/scratch/ab2603/distbayesianmc_higgs/tmp/

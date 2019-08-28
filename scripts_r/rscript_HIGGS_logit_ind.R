@@ -5,8 +5,9 @@ library(rstan)
 args = commandArgs(trailingOnly = TRUE)
 print(args)
 
-#i_split <- as.integer(args[1]) # which iteration are we running?
-sim_id <- as.integer(args[1]) # which iteration are we running?
+i_split <- as.integer(args[1]) # which iteration are we running?
+#sim_id <- as.integer(args[1]) # which iteration are we running?
+sim_id <- "loop iters"
 ssplits <- as.integer(args[2]) # how many splits?
 
 setwd("~/R_programming/distbayesianmc")
@@ -71,8 +72,8 @@ f_split_number <- function(sim_id, ssplits) {
   }
 }
 
-i_split <- f_split_number(sim_id, ssplits)
-i_iter <- f_i_iter(sim_id, ssplits)
+#i_split <- f_split_number(sim_id, ssplits)
+#i_iter <- f_i_iter(sim_id, ssplits)
 
 # for testing
 #sapply(X = c(1:200), FUN = function(x) f_split_number(x, 20))
@@ -80,21 +81,23 @@ i_iter <- f_i_iter(sim_id, ssplits)
 
 for (dataset in vec_datasets) {
   dataset_loaded <- f_dataset_loader(dataset, server=server_ind)
-  splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
-  splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
-  print(tempdir())
-  print(list.files(tempdir()))
-  tryCatch({
-    f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
-    line <-  paste("completed, ", sim_id, ", ", dataset, ",", i_split,",", i_iter, ",", ssplits, sep = "")
-    write(line, file = "status_sim.txt", append = TRUE)
+  for (i_iter in 1:iters) {
     
-  }, error = function(err) { 
-    line <-  paste("failed, ", sim_id, ", ", dataset, ",", i_split,",", i_iter, ",", ssplits, sep = "")
-    write(line, file = "status_sim.txt", append = TRUE)
+    splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
+    splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
+    print(tempdir())
+    print(list.files(tempdir()))
+    tryCatch({
+      f_stan_sampling_single_split(mod, splitted_data[[i_split]], dataset = dataset, i_seed = i_iter, iter = i_iter, typesplit = typesplit, nchain = nchain, typeprior = typeprior)
+      line <-  paste("completed, ", sim_id, ", ", dataset, ",", i_split,",", i_iter, ",", ssplits, sep = "")
+      write(line, file = "status_sim.txt", append = TRUE)
+      
+    }, error = function(err) { 
+      line <-  paste("failed, ", sim_id, ", ", dataset, ",", i_split,",", i_iter, ",", ssplits, sep = "")
+      write(line, file = "status_sim.txt", append = TRUE)
+      
+      })
     
-    })
-  
   # for (i_iter in 1:iters) {
   #   dataset_loaded <- f_dataset_loader(dataset)
   #   splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
@@ -119,5 +122,6 @@ for (dataset in vec_datasets) {
   #       # )
   #   print(tempdir()) 
   # }
+  }
 }
 

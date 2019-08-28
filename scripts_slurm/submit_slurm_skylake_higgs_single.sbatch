@@ -12,7 +12,7 @@
 ##SBATCH --array=1-100%40
 
 #SBATCH --mail-type=FAIL
-#SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/output.%a.out # STDOUT
+#SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/slurm-%A_%a.out # STDOUT
 
 export TMPDIR=/scratch/alexander/distbayesianmc_higgs/tmp/
 module load r-3.6.0-gcc-5.4.0-bzuuksv
