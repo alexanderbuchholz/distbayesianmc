@@ -6,7 +6,7 @@
 #SBATCH -A mrc-bsu-sl2-cpu
 #SBATCH -p skylake-himem
 #SBATCH -n 1              # on one node
-#SBATCH -t 24:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
+#SBATCH -t 6:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
 
 ## 500 splits, 20 repetitions
 
