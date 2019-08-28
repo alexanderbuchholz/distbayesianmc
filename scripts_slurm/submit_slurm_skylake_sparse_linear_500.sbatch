@@ -8,6 +8,7 @@
 #SBATCH -n 1              # on one node
 #SBATCH -t 2:00:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
 
+
 ## 500 splits, 20 repetitions
 
 #SBATCH --array=1-10000%100
