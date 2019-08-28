@@ -7,7 +7,7 @@
 #SBATCH -p skylake-himem
 
 #SBATCH -n 1              # on one node
-#SBATCH -t 12:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
+#SBATCH -t 12:00:00          # Running time of 2 hours 24-0:00 (days-hours:minutes)
 
 ##SBATCH --array=1-100%40
 
