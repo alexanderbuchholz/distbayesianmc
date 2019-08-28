@@ -430,7 +430,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
     samplesize = nobs
     betasize = 5
     if(highcorr) {
-      corr_mat <- matrix(0.99, nrow = betasize, ncol = betasize)
+      corr_mat <- matrix(0.9, nrow = betasize, ncol = betasize)
       diag(corr_mat) <- rep(1,betasize)
       
       var_x <- rep(1,betasize)

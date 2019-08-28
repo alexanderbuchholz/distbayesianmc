@@ -12,7 +12,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
   # TODO: make sur that the scale is set right here!
   beta.priors <- cbind(rep(0, pvars-1), rep(splitted_data_rjmcmc[[i_split]]$scale, pvars-1))
   row.names(beta.priors) <- predictors
-  rjmcmc.results <- R2BGLiMS(
+  rjmcmc.results <- R2BGLiMS::R2BGLiMS(
     #save.path = "./tmp",
     likelihood="Logistic",
     data=data,
@@ -29,7 +29,7 @@ f_rjmcmc_on_splits <- function(splitted_data_rjmcmc, i_split = 1, n.mil = 2, i_s
     )
   )
   
-  topmodel_res <- TopModels(rjmcmc.results, n.top.models = 100, remove.empty.cols = F)  
+  topmodel_res <- R2BGLiMS::TopModels(rjmcmc.results, n.top.models = 100, remove.empty.cols = F)  
   mcmc_ouput <- rjmcmc.results@mcmc.output  
   nsplits <-  length(splitted_data_rjmcmc)
   dataset <- splitted_data_rjmcmc[[i_split]]$dataset

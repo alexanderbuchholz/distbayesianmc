@@ -10,5 +10,8 @@
 
 #SBATCH --mail-type=FAIL
 
+#SBATCH -o /scratch/alexander/slurm_output/slurm-%A_%a.out # STDOUT
+export TMPDIR=/scratch/alexander/distbayesianmc_rjmcmc/tmp/
+
 Rscript ../scripts_r/rscript_rjmcmc.R $SLURM_ARRAY_TASK_ID
 
