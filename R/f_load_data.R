@@ -373,7 +373,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs2_full"){
     # subset of the higgs data set
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
