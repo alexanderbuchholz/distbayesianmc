@@ -14,5 +14,7 @@
 
 export TMPDIR=/scratch/alexander/distbayesianmc_higgs/tmp/
 
+
+
 Rscript ../scripts_r/rscript_HIGGS_logit_ind.R $SLURM_ARRAY_TASK_ID "1000"
 
