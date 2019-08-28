@@ -287,7 +287,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs1_full"){
     # subset of the higgs data set
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = T, sep = ",", stringsAsFactors = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
@@ -304,7 +304,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs1_small"){
     # subset of the higgs data set
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = T, sep = ",", stringsAsFactors = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
@@ -322,7 +322,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs1_large"){
     # subset of the higgs data set, 10**5 lines
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = T, sep = ",", stringsAsFactors = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
@@ -339,7 +339,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs2_large"){
     # subset of the higgs data set, 10**5 lines
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = T, sep = ",", stringsAsFactors = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1_large.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1_large.csv", header = F)
@@ -356,7 +356,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs2_small"){
     # subset of the higgs data set, 10**5 lines
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = T, sep = ",", stringsAsFactors = F)
+      df <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv1.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv1.csv", header = F)
@@ -373,7 +373,7 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
   else if (dataset == "higgs2_full"){
     # subset of the higgs data set
     if(server){
-      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = T, sep = ",", stringsAsFactors = F)
+      df_small <- read.csv("/mrc-bsu/scratch/ab2603/higgsdata/HIGGS.csv", header = F)
     }
     else{
       df <- read.csv("/scratch/alexander/higgsdata/HIGGS.csv", header = F)
