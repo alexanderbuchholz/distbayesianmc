@@ -77,7 +77,7 @@ i_iter <- f_i_iter(sim_id, ssplits)
 #sapply(X = c(1:100), FUN = function(x) f_i_iter(x, 20)) == 1
 
 for (dataset in vec_datasets) {
-  dataset_loaded <- f_dataset_loader(dataset)
+  dataset_loaded <- f_dataset_loader(dataset, server=T)
   splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
   splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
   print(tempdir())
