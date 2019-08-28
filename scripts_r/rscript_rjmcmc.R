@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 library(distbayesianmc)
+library(R2BGLiMS)
 #task_id_string <- Sys.getenv("SLURM_ARRAY_TASK_ID")
 #task_id <- as.numeric(task_id_string)
 
