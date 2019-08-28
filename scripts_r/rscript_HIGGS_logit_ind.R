@@ -16,12 +16,12 @@ source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
 #set.seed(i_split)
 #x_wait <- rexp(1,1)
 #Sys.sleep(x_wait)
-if (T) {
+if (F) {
   # compile the model on every run
   stan_code <- readChar(fileName, file.info(fileName)$size)
   mod <- rstan::stan_model(model_code = stan_code)#, auto_write = T)
 }
-if (F) {
+if (T) {
   # use a precompiled model
   rstan::rstan_options(auto_write = TRUE)
   mod <- readRDS(file = "~/R_programming/distbayesianmc/stan_models/fit_logistic.rds")
