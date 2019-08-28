@@ -14,7 +14,7 @@ scale <- 1
 
 typesplit <-  "random"
 nobs <- 4*10**3
-nchain <- 2000
+nchain <- 10000
 typeprior <- "laplace_normal"
 highcorr <- TRUE
 

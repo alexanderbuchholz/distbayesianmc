@@ -14,7 +14,7 @@ scale <- 1
 
 typesplit <-  "random"
 nobs <- 10**3
-nchain <- 3000
+nchain <- 10000
 typeprior <- "normal"
 Pparams <- 0
 iters <- 20
