@@ -29,8 +29,10 @@ if (F) {
 #setwd("./sim_results/logistic/")
 if( Sys.info()[["user"]] == "ab2603" ){
   setwd("/mrc-bsu/scratch/ab2630/distbayesianmc_higgs/")
+  server_ind = T
 } else {
   setwd("/scratch/alexander/distbayesianmc_higgs/")
+  server_ind = F
 }
 
 
@@ -77,7 +79,7 @@ i_iter <- f_i_iter(sim_id, ssplits)
 #sapply(X = c(1:100), FUN = function(x) f_i_iter(x, 20)) == 1
 
 for (dataset in vec_datasets) {
-  dataset_loaded <- f_dataset_loader(dataset, server=T)
+  dataset_loaded <- f_dataset_loader(dataset, server=server_ind)
   splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
   splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
   print(tempdir())
