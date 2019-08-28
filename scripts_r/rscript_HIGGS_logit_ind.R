@@ -9,8 +9,13 @@ print(args)
 sim_id <- as.integer(args[1]) # which iteration are we running?
 ssplits <- as.integer(args[2]) # how many splits?
 
-setwd("~/R_programming/distbayesianmc")
-source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
+if( Sys.info()[["user"]] == "ab2603" ){
+  setwd("~/distbayesianmc")
+  source("~/distbayesianmc/params_simulation/params_logit_higgs.R")
+} else {
+  setwd("~/R_programming/distbayesianmc")
+  source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
+}
 
 
 #set.seed(i_split)
@@ -27,7 +32,13 @@ if (T) {
   mod <- readRDS(file = "~/R_programming/distbayesianmc/stan_models/fit_logistic.rds")
 }
 #setwd("./sim_results/logistic/")
-setwd("/scratch/alexander/distbayesianmc_higgs/")
+if( Sys.info()[["user"]] == "ab2603" ){
+  setwd("/scratch/alexander/distbayesianmc_higgs/")
+} else {
+  setwd("/mrc-bsu/scratch/ab2630/distbayesianmc_higgs/")
+}
+
+
 print(tempdir())
 #print(mod)
 
