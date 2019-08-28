@@ -13,6 +13,7 @@
 #SBATCH --array=1-10000%500
 
 #SBATCH --mail-type=FAIL
+#SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/output.%a.out # STDOUT
 
 export TMPDIR=/mrc-bsu/scratch/ab2603/distbayesianmc_sparselinear/tmp/
   
