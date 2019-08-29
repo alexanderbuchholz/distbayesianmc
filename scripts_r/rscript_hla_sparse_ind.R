@@ -2,6 +2,8 @@ library(distbayesianmc)
 library(rstan)
 args = commandArgs(trailingOnly = TRUE)
 print(args)
+setwd("~/R_programming/distbayesianmc")
+source("~/R_programming/distbayesianmc/params_simulation/params_sparse.R")
 
 
 ssplits <- as.integer(args[2]) # how many splits?
@@ -18,9 +20,6 @@ if (args[3] == "split_loop"){
   i_split <- as.integer(args[1]) # which iteration are we running?
   sim_id <- "loop iters"
 }
-
-setwd("~/R_programming/distbayesianmc")
-source("~/R_programming/distbayesianmc/params_simulation/params_sparse.R")
 
 
 # load or compile model

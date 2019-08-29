@@ -4,14 +4,25 @@ library(rstan)
 #task_id <- as.numeric(task_id_string)
 args = commandArgs(trailingOnly = TRUE)
 print(args)
-
-i_split <- as.integer(args[1]) # which iteration are we running?
-#sim_id <- as.integer(args[1]) # which iteration are we running?
-sim_id <- "loop iters"
-ssplits <- as.integer(args[2]) # how many splits?
-
 setwd("~/R_programming/distbayesianmc")
 source("~/R_programming/distbayesianmc/params_simulation/params_logit_higgs.R")
+
+
+ssplits <- as.integer(args[2]) # how many splits?
+
+if (args[3] == "split_loop"){
+  # split the loop in bits, slurm handles everything
+  sim_id <- as.integer(args[1]) # which iteration are we running?
+  i_split <- f_split_number(sim_id, ssplits)
+  i_iter <- f_i_iter(sim_id, ssplits)
+  iters <- 1 # overwrite what comes from the params file
+  
+} else {
+  # looping is done inside R
+  i_split <- as.integer(args[1]) # which iteration are we running?
+  sim_id <- "loop iters"
+}
+
 
 
 #set.seed(i_split)
@@ -45,32 +56,6 @@ print(tempdir())
 #sim_id <- 498
 #sim_id <- 500
 #ssplits <-500
-  
-
-f_i_iter <- function(sim_id, ssplits){
-  # returns the iteration number (in thousands or hundreds)
-  if(sim_id %% ssplits == 0){
-    return((sim_id %/% ssplits))
-  }
-  else{
-    return( (sim_id %/% ssplits) + 1)
-  }
-}
-f_split_number <- function(sim_id, ssplits) {
-  # function that returns the ssplit number
-  if (sim_id <= ssplits){
-    return(sim_id)
-  }
-  else {
-    if((sim_id %% ssplits)==0){
-      return(ssplits)
-    }
-    else{
-      return((sim_id %% ssplits))
-    }
-    
-  }
-}
 
 #i_split <- f_split_number(sim_id, ssplits)
 #i_iter <- f_i_iter(sim_id, ssplits)
@@ -82,7 +67,7 @@ f_split_number <- function(sim_id, ssplits) {
 for (dataset in vec_datasets) {
   dataset_loaded <- f_dataset_loader(dataset, server=server_ind)
   for (i_iter in 1:iters) {
-    
+    if (args[3] == "split_loop") i_iter <- f_i_iter(sim_id, ssplits)
     splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=ssplits, iseed=i_iter, typesplit=typesplit)
     splitted_data <- f_prep_prior_logistic(splitted_data, scale = scale)
     print(tempdir())
