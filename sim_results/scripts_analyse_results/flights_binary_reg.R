@@ -30,6 +30,7 @@ p1 <- ggplot(df_all %>% filter(splits != "100") , aes_string(x="splits", y="norm
         axis.title.y = element_text(size=18),
         legend.position="bottom",
         )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0")) +
+  scale_x_discrete(labels=c("10 \n(32,734)", "20 \n(16,367)", "50 \n(6,547)") )+ 
     theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -49,6 +50,7 @@ p2 <- ggplot(df_all  %>% filter(model != "2 exact") %>% filter(splits != "100") 
         axis.title.y = element_blank(),
         legend.position = "none"
   ) + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9")) +
+  scale_x_discrete(labels=c("10 \n(32,734)", "20 \n(16,367)", "50 \n(6,547)") )+ 
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
