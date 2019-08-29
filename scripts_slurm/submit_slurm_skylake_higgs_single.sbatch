@@ -16,5 +16,5 @@
 
 export TMPDIR=/scratch/alexander/distbayesianmc_higgs/tmp/
 module load r-3.6.0-gcc-5.4.0-bzuuksv
-Rscript ../scripts_r/rscript_HIGGS_logit_ind.R "1" "1000"
+Rscript ../scripts_r/rscript_HIGGS_logit_ind.R "1" "1000" "split_loop"
 

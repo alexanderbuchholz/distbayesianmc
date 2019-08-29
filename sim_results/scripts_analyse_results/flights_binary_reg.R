@@ -22,28 +22,45 @@ library(ggplot2)
 
 
 
-p1 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined", fill="model")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log normalizing constant", title="Estimated normalizing constant \nfor the flights data set") +
-  theme(plot.title = element_text(hjust = 0.5, size=20),
-        text = element_text(size=20),
-        axis.title.x = element_text(size=20),
-        axis.title.y = element_text(size=20),
-        )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0"))
+p1 <- ggplot(df_all %>% filter(splits != "100") , aes_string(x="splits", y="normconstcombined", fill="model")) +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence \nfor the flights data set") +
+  theme(plot.title = element_text(hjust = 0.5, size=18),
+        text = element_text(size=18),
+        axis.title.x = element_text(size=18),
+        axis.title.y = element_text(size=18),
+        legend.position="bottom",
+        )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0")) +
+    theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=2,byrow=TRUE))
 
 
 
 
 
 p2 <- ggplot(df_all  %>% filter(model != "2 exact") %>% filter(splits != "100")  , aes_string(x="splits", y="normconstcombined", fill="model")) +
-  geom_boxplot() +  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5, size=20),
-        text = element_text(size=10),
+  geom_boxplot() +  theme_light() + labs(title="Zoom")+
+  theme(plot.title = element_text(hjust = 0.5, size=16),
+        text = element_text(size=18),
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         legend.position = "none"
-  ) + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9"))
+  ) + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9")) +
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(xintercept = c(1.5, 2.5))
 
-
+library(ggpubr)
+figure <- ggarrange(p1, p2, 
+                    #labels = c("A", "B"),
+                    ncol = 2)
+ggsave("flightsdata.pdf", plot = figure, width = 8, height = 4)
 
 g2 <- ggplotGrob(p2)
 
