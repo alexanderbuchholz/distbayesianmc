@@ -78,7 +78,7 @@ if(T){
   }
 }
 
-df <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters)
+df <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, 10)
 #f_plot_res_data_frame(df)
 f_plot_res_data_frame(df, vec_datasets = vec_datasets)
 
@@ -97,18 +97,18 @@ if(F){
   
   df_true_means <- df_reduced %>% group_by(splits, dataset) %>% summarise(true_mean_all = mean(true_mean))
   
-  average_error <- df_reduced %>% group_by(splits, dataset) %>% summarise(MSE = mean(sqerror)) %>% mutate(srerror = round(MSE**0.5, 3))
+  average_error <- df_reduced %>% group_by(splits, dataset) %>% summarise(MSE = mean(sqerror), VAR = var(normconstcombined))  %>% mutate(srerror = round(MSE**0.5, 3)) 
   
   average_error[['percenterror']] <- round((average_error$srerror/df_true_means$true_mean_all*100), 4)
   
-  average_error
+  average_error[["bias_var_ratio"]] <- round(average_error$MSE/average_error$VAR-1, 2)
   
   write.table(t(as.matrix(
-    average_error %>% filter(dataset == vec_datasets[1]) %>% select(splits, srerror, percenterror) 
+    average_error %>% filter(dataset == vec_datasets[1]) %>% select(splits, srerror, percenterror, bias_var_ratio) 
   )), "table1.txt", quote=FALSE, eol="\\\\\n", sep=" & ")
   
   write.table(t(as.matrix(
-    average_error %>% filter(dataset == vec_datasets[2]) %>% select(splits, srerror, percenterror) 
+    average_error %>% filter(dataset == vec_datasets[2]) %>% select(splits, srerror, percenterror, bias_var_ratio) 
   )), "table2.txt", quote=FALSE, eol="\\\\\n", sep=" & ")
   
 }
