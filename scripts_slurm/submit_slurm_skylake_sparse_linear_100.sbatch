@@ -10,7 +10,7 @@
 
 ## 100 splits, 20 repetitions
 
-#SBATCH --array=1-100
+#SBATCH --array=1-2000
 
 #SBATCH --mail-type=FAIL
 #SBATCH -o /mrc-bsu/scratch/ab2603/slurm_output/slurm-%A_%a.out # STDOUT
@@ -19,5 +19,5 @@ export TMPDIR=/mrc-bsu/scratch/ab2603/distbayesianmc_sparselinear/tmp/
 
 
 module load r-3.6.0-gcc-5.4.0-bzuuksv  
-Rscript ../scripts_r/rscript_hla_sparse_ind.R $SLURM_ARRAY_TASK_ID "100"
+Rscript ../scripts_r/rscript_hla_sparse_ind.R $SLURM_ARRAY_TASK_ID "100" "split_loop"
 

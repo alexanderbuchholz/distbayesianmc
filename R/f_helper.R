@@ -1,5 +1,32 @@
 # help files for splitting
 
+# helper for simulations on the cluster
+f_i_iter <- function(sim_id, ssplits){
+  # returns the iteration number (in thousands or hundreds)
+  if(sim_id %% ssplits == 0){
+    return((sim_id %/% ssplits))
+  }
+  else{
+    return( (sim_id %/% ssplits) + 1)
+  }
+}
+f_split_number <- function(sim_id, ssplits) {
+  # function that returns the ssplit number
+  if (sim_id <= ssplits){
+    return(sim_id)
+  }
+  else {
+    if((sim_id %% ssplits)==0){
+      return(ssplits)
+    }
+    else{
+      return((sim_id %% ssplits))
+    }
+    
+  }
+}
+
+
 f_pack_split_data <- function(X, y, d=NULL, Pparams=0, ssplits=4, iseed=42, typesplit="random", dataset = ""){
   # returns a list with the splitted data
   set.seed(iseed)
