@@ -59,8 +59,12 @@ f_log_norm_const_natural_gaussian_standard_params <- function(mu, Sigma){
 
 f_log_norm_const_natural_gaussian_natural_params <- function(eta, Lambda){
   # the parameters are with respect to the natural parameters
+  #browser()
   Lambda_inv <- solve(Lambda)
-  res <- 0.5*eta%*%Lambda_inv%*%eta+0.5*log(det(2*pi*Lambda_inv))
+  #logdet <- log(det(2*pi*Lambda_inv))
+  logdet <- unlist(determinant(2*pi*Lambda_inv, logarithm = T))[1]
+  #res <- 0.5*eta%*%Lambda_inv%*%eta+0.5*log(det(2*pi*Lambda_inv))
+  res <- 0.5*eta%*%Lambda_inv%*%eta+0.5*logdet
   return(res)
 }
 
@@ -113,6 +117,7 @@ f_sum_params_gaussian <- function(mu_all, Sigma_all){
 
 f_integral_product_gaussian <- function(mu_all, Sigma_all){
   ssplits <- dim(mu_all)[1]
+  #browser()
   res_list <- f_gaussian_standard_to_natural_params(mu_all, Sigma_all)
   #Q_joint <- rowSums(res_list$Lambda_all, dims = 2)
   Q_joint <- apply(res_list$Lambda_all, c(1,2), sum)
