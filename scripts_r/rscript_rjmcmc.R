@@ -8,7 +8,7 @@ mrep <- 20
 n.mil <- 10
 n.cores <- 1
 dataset <-  "sim2"
-nobsdata <- 10000
+nobsdata <- 4000
 typesplit <-  "random"
 savestring <-  paste(dataset, typesplit, sep = "_")
 
