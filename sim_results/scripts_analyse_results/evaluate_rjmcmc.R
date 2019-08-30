@@ -17,7 +17,7 @@ source("~/R_programming/distbayesianmc/scripts_r/rscript_rjmcmc.R")
 
 # putting all the model results in one joint frame
 vec_splits <- c(1,2,3,5)#,10)
-dataset <- "higgs1_large"
+dataset <- "sim2"
 iters <-  20
 
 # use this only for the higgs data set
