@@ -59,3 +59,11 @@ for(dataset in vec_datasets){
     counter <- counter + 1 
   }
 }
+
+
+df_all <- do.call(rbind, list_splits)
+
+df_all$splits <- as.factor(df_all$splits)
+p1 <- ggplot(df_all, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
+  geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df_all$splits))))) + theme_minimal()# + theme_gray()
+
