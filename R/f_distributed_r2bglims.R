@@ -340,7 +340,7 @@ f_joint_bf_model_splits_rjmcmc <- function(res_onesplit, res_several_splits, key
 
 
 f_intersection_keys <- function(splits, df, df_single_split = ""){
-  
+  #browser()
   keys_per_split1 <- df %>% filter(counter_sim == 1, i_split==1) %>% dplyr::select(key_model)
   common_keys <- intersect(keys_per_split1, keys_per_split1)  
   if(df_single_split != ""){

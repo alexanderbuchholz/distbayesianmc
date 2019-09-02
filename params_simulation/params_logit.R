@@ -12,7 +12,7 @@ scale <- 1
 #iter <- 1
 #ssplits <- 5
 
-typesplit <-  "random"
+typesplit <-  "strat_y_cluster"
 nobs <- 10**3
 nchain <- 3000
 typeprior <- "normal"
@@ -27,6 +27,6 @@ vec_types_splits <- c(typesplit)
 
 # multiple simulations
 #vec_splits <- c(1,2,3,5,10,20)
-vec_splits <- c(10,20,50,100)
+vec_splits <- c(10,20,50)#,100)
 #vec_splits <- c(2,3,5,10)#,20)
 #vec_splits <- c(1)

@@ -16,12 +16,12 @@ source("~/R_programming/distbayesianmc/scripts_r/rscript_rjmcmc.R")
 #res_out$mcmc_ouput
 
 # putting all the model results in one joint frame
-vec_splits <- c(1,2,3,5)#,10)
+vec_splits <- c(1,2,3,5,10)
 dataset <- "sim2"
 iters <-  20
 
 # use this only for the higgs data set
-list_params_model <- list_params_model[1:4]
+#list_params_model <- list_params_model[1:4]
 
 list_all_results_df <- list()
 list_all_results_output <- list()
@@ -60,7 +60,8 @@ for (params_model in list_params_model){
   keys_intersect <- intersect(common_keys_single, common_keys_multisplit)
 }
 
-combos <- list(c(1,2))#, c(2,3), c(3,4), c(1,3), c(2,4), c(1,4))
+#combos <- list(c(1,2), c(2,3), c(3,4), c(1,3), c(2,4), c(1,4))
+combos <- list(c(1,2), c(2,3), c(1,3))
 list_res <- list()
 counter_combs <- 0
 for(model_comb in combos){
@@ -98,6 +99,8 @@ library(ggplot2)
 frames_different_models %<>% mutate(ssplits = as.character(splits))
 
 frames_different_models$ssplits <- factor(frames_different_models$ssplits, levels = vec_splits, ordered = TRUE)
+
+frames_different_models %<>% filter(abs(BF)<100)
 bp <- ggplot(frames_different_models, aes(y=BF, x=ssplits, group=splits)) + 
   geom_boxplot() + facet_wrap(. ~ model, ncol=3) +  theme_minimal() +  
   labs(fill = "Model", y = "log Bayes factor", x = "# splits", title="log Bayes factors accross \n different splits and models") +

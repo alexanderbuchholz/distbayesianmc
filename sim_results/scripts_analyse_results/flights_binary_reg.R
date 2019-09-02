@@ -3,26 +3,41 @@ library(distbayesianmc)
 library(gridExtra)
 library(grid)
 setwd("~/R_programming/distbayesianmc")
-source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
+#source("~/R_programming/distbayesianmc/params_simulation/params_logit.R")
 #setwd("./sim_results/logistic/") # use this for the pima dataset
 setwd("/scratch/alexander/distbayesianmc_logit/")
 
-df_logistic <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters, type_sim = "stan_")
-df_logistic_exact <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, iters, type_sim = "")
-df_logistic_reduced <- df_logistic %>% select(normconstcombined, splits, dataset)
-df_logistic_exact_reduced <- df_logistic_exact %>% select(normconstcombined, splits, dataset)
+
+
+iters <- 20
+vec_datasets <- c("flights_complex1", "flights_complex2")#, )#, "higgs1_full", "higgs2_full")
+#vec_datasets <- c("higgs1_large", "higgs2_large")#, "higgs1_full", "higgs2_full")
+#vec_datasets <- c("pima")
+vec_types_splits_exact <- c("random", "strat_y_cluster")
+vec_types_splits_approx <- c("random")
+
+# multiple simulations
+#vec_splits <- c(1,2,3,5,10,20)
+vec_splits <- c(10,20,50)#,100)
+
+df_logistic <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits_approx, iters, type_sim = "stan_")
+df_logistic_exact <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits_exact, iters, type_sim = "")
+df_logistic_reduced <- df_logistic %>% select(normconstcombined, splits, dataset, typesplit)
+df_logistic_exact_reduced <- df_logistic_exact %>% select(normconstcombined, splits, dataset, typesplit)
 
 
 df_logistic_exact_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 exact")) %>% mutate(model = replace(model, model=="flights_complex2", "2 exact"))
+df_logistic_exact_reduced %<>% mutate(model_strat = replace(typesplit, typesplit=="strat_y_cluster", "stratified")) %>% mutate(model_strat = paste(model_strat, model, sep= " "))
 
 df_logistic_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 approx")) %>% mutate(model = replace(model, model=="flights_complex2", "2 approx"))
+df_logistic_reduced %<>% mutate(model_strat = replace(typesplit, typesplit=="strat_y_cluster", "stratified")) %>% mutate(model_strat = paste(model_strat, model, sep= " "))
 
 df_all <- rbind(df_logistic_reduced, df_logistic_exact_reduced)
 library(ggplot2)
 
 
 
-p1 <- ggplot(df_all %>% filter(splits != "100") , aes_string(x="splits", y="normconstcombined", fill="model")) +
+p1 <- ggplot(df_all %>% filter(splits != "100", typesplit == "random") , aes_string(x="splits", y="normconstcombined", fill="model")) +
   geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence \nfor the flights data set") +
   theme(plot.title = element_text(hjust = 0.5, size=18),
         text = element_text(size=18),
@@ -42,7 +57,7 @@ p1 <- ggplot(df_all %>% filter(splits != "100") , aes_string(x="splits", y="norm
 
 
 
-p2 <- ggplot(df_all  %>% filter(model != "2 exact") %>% filter(splits != "100")  , aes_string(x="splits", y="normconstcombined", fill="model")) +
+p2 <- ggplot(df_all  %>% filter(model != "2 exact", typesplit == "random") %>% filter(splits != "100")  , aes_string(x="splits", y="normconstcombined", fill="model")) +
   geom_boxplot() +  theme_light() + labs(title="Zoom")+
   theme(plot.title = element_text(hjust = 0.5, size=16),
         text = element_text(size=18),
@@ -58,11 +73,29 @@ p2 <- ggplot(df_all  %>% filter(model != "2 exact") %>% filter(splits != "100") 
         panel.background = element_blank()) +
   geom_vline(xintercept = c(1.5, 2.5))
 
+
+p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 exact") , aes_string(x="splits", y="normconstcombined", fill="model_strat")) +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence \nfor the flights data set") +
+  theme(plot.title = element_text(hjust = 0.5, size=18),
+        text = element_text(size=18),
+        axis.title.x = element_text(size=18),
+        axis.title.y = element_text(size=18),
+        legend.position="bottom",
+  )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0")) +
+  scale_x_discrete(labels=c("10 \n(32,734)", "20 \n(16,367)", "50 \n(6,547)") )+ 
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=3,byrow=TRUE))
+
+
 library(ggpubr)
-figure <- ggarrange(p1, p2, 
+figure <- ggarrange(p1, p2, p3,
                     #labels = c("A", "B"),
-                    ncol = 2)
-ggsave("flightsdata.pdf", plot = figure, width = 8, height = 4)
+                    ncol = 3)
+ggsave("flightsdata.pdf", plot = figure, width = 12, height = 6)
 
 g2 <- ggplotGrob(p2)
 

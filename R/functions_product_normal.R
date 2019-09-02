@@ -32,12 +32,27 @@ f_gaussian_standard_to_natural_params <- function(mu_all, Sigma_all){
   # transforms standard gaussian parameters to natural parameters
   ssplits <- dim(Sigma_all)[3]
   d <- dim(Sigma_all)[1]
-  Lambda_all <- array(unlist(lapply(c(1:ssplits), function(i) solve(Sigma_all[,,i]))), dim=c(d,d,ssplits))
-  eta_all <- t(sapply(c(1:ssplits), function(i) Lambda_all[,,i]%*%mu_all[i,]))
-  res_list <- list()
-  res_list[["eta_all"]] <- eta_all
-  res_list[["Lambda_all"]] <- Lambda_all
-  return(res_list)
+  #browser()
+  Lambda_all <-tryCatch({
+    #Lambda_all <- 
+    Lambda_all <- array(unlist(lapply(c(1:ssplits), function(i) solve(Sigma_all[,,i]))), dim=c(d,d,ssplits))
+    eta_all <- t(sapply(c(1:ssplits), function(i) Lambda_all[,,i]%*%mu_all[i,]))
+    res_list <- list()
+    res_list[["eta_all"]] <- eta_all
+    res_list[["Lambda_all"]] <- Lambda_all
+    return(res_list)
+  }, error=function(...){
+      #browser()
+      Lambda_all <- array(unlist(lapply(c(1:ssplits), function(i) solve(Sigma_all[,,i]+diag(x=10^(-6), d, d)))), dim=c(d,d,ssplits))
+      eta_all <- t(sapply(c(1:ssplits), function(i) Lambda_all[,,i]%*%mu_all[i,]))
+      res_list <- list()
+      res_list[["eta_all"]] <- eta_all
+      res_list[["Lambda_all"]] <- Lambda_all
+      return(res_list)
+  })
+  
+  
+  
 }
 
 if(F){

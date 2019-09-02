@@ -11,8 +11,9 @@
 #SBATCH --array=1-2000%40 
 
 #SBATCH --mail-type=FAIL
+#SBATCH -o /scratch/alexander/slurm_output/slurm-%A_%a.out # STDOUT
 
 export TMPDIR=/scratch/alexander/distbayesianmc_higgs/tmp/
 
-Rscript ../scripts_r/rscript_HIGGS_logit_ind.R $SLURM_ARRAY_TASK_ID "100"
+Rscript ../scripts_r/rscript_HIGGS_logit_ind.R $SLURM_ARRAY_TASK_ID "100" "split_loop"
 
