@@ -10,9 +10,12 @@ file_identifier <- ""
 mrep <- 20
 
 setwd("/scratch/alexander/distbayesianmc_sparselinear/res_ind_server/")
+#setwd("/scratch/alexander/distbayesianmc_sparselinear/")
 
 vec_datasets <- c("hla1", "hla2")
-vec_splits <- c(50, 100)
+#vec_datasets <- c("hla_ultra_small1", "hla_ultra_small2")
+vec_splits <- c(20, 50, 100)
+#vec_splits <- c(1,5,10,20,50)
 list_splits <- list()
 counter <- 1
 for(dataset in vec_datasets){
@@ -64,6 +67,50 @@ for(dataset in vec_datasets){
 df_all <- do.call(rbind, list_splits)
 
 df_all$splits <- as.factor(df_all$splits)
-p1 <- ggplot(df_all, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
-  geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df_all$splits))))) + theme_minimal()# + theme_gray()
 
+
+#p1 <- ggplot(df_all, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
+#  geom_boxplot() + scale_x_discrete(limits=as.character(sort(as.numeric(levels(df_all$splits))))) + theme_minimal()# + theme_gray()
+
+
+p1 <- ggplot(df , aes_string(x="splits", y="normconstcombined", fill="dataset")) +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log evidence", title="Subset HLA data set") +
+  theme(plot.title = element_text(hjust = 0.5, size=18),
+        text = element_text(size=18),
+        axis.title.x = element_text(size=18),
+        axis.title.y = element_text(size=18),
+        legend.position="bottom",
+  )  +
+  scale_x_discrete(labels=c("1 \n(13,235)", "5 \n(2,647)", "10 \n(1,324)", "20 \n(662)","50 \n(265)") )+ 
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(xintercept = c(1.5, 2.5, 3.5, 4.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE)) +
+  scale_fill_discrete(name = "Model", labels = c("1", "2"))
+
+
+p2 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined", fill="dataset"))+ #facet_wrap(. ~ dataset, ncol=2)+
+  geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "", title="Full HLA data set") +
+  theme(plot.title = element_text(hjust = 0.5, size=18),
+        text = element_text(size=18),
+        axis.title.x = element_text(size=18),
+        axis.title.y = element_text(size=18),
+        legend.position="bottom",
+  )  +
+  scale_x_discrete(labels=c("20 \n(6,618)", "50 \n(2,647)", "100 \n(1,324)") )+ 
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE)) +
+  scale_fill_discrete(name = "Model", labels = c("1", "2"))
+
+
+
+figure <- ggarrange(p1, p2, widths = c(3.5,2.5),
+                    #labels = c("A", "B"),
+                    ncol = 2)
+ggsave("hladata.pdf", plot = figure, width = 8, height = 4)

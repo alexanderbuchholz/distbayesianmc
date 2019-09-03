@@ -81,7 +81,7 @@ if(T){
 df <- f_combine_const_data_in_frame(vec_splits, vec_datasets, vec_types_splits, 10)
 #f_plot_res_data_frame(df)
 f_plot_res_data_frame(df, vec_datasets = vec_datasets)
-
+save(df, file="res_sparselinear_ultrasmall.Rda")
 
 if(F){
   df_reduced <- df %>% select(c(normconstcombined, iter, splits, dataset))
