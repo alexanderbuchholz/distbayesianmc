@@ -1,6 +1,6 @@
 # load data sets
 
-f_sim_sparse_data <- function(nobs, highcorr=F){
+f_sim_sparse_data <- function(nobs, highcorr=F, Pdim = 50){
   list_data <- list()
   set.seed(123)
   N <-  nobs
@@ -33,6 +33,67 @@ f_sim_sparse_data <- function(nobs, highcorr=F){
   # simulate data
   if(highcorr) {
     corr_mat <- matrix(0.99, nrow = P, ncol = P)
+    diag(corr_mat) <- rep(1,P)
+    
+    var_x <- rep(1,P)
+    sigma_x <- diag(var_x) %*% corr_mat %*% diag(var_x)
+  }
+  else sigma_x <- diag(nrow = P)
+  for (n in 1:N) {
+    x[n,] <- mvtnorm::rmvnorm(1, sigma=sigma_x)
+    #for (m in 1:P){
+    #  x[n, m] = rnorm(n=1)
+    #}
+    y[n] = rnorm(n=1, mean = t(x[n,]) %*% betavec + alpha, sd = sigma)
+  }
+  
+  #list_data[["X"]] <- x[,1:(P-1)] # remove the last observation here
+  #list_data[["y"]] <- y
+  #list_data[["betastar"]] <- c(beta[1:(P-1)], alpha, log(sigma))
+  list_data[["X"]] <- x # remove the last observation here
+  list_data[["y"]] <- y
+  list_data[["betastar"]] <- c(betavec, alpha, log(sigma))
+  list_data[["dataset"]] <- dataset
+  return(list_data)
+  
+}
+
+f_sim_gaussian_data <- function(nobs, highcorr=T, P = 15){
+  list_data <- list()
+  set.seed(123)
+  N <-  nobs
+  #P <-  50
+  
+  alpha <-  3
+  sigma <-  1
+  sig_prob <-  0.2
+  
+  
+  x <- matrix(0, ncol = P, nrow = N)
+  y <- rep(0, N)
+  betavec <- rep(0, P)
+  
+  # simulate betavec
+  for (m in 1:(P-5)) {
+    if (rbinom(1, prob = sig_prob, size=1)){
+      if (rbinom(1, prob = 0.5, size=1)){
+        betavec[m] <-  rnorm(n=1, mean=1, sd=1)
+      }
+      else{
+        betavec[m] <-  rnorm(n=1, mean=-1, sd=1)
+      }
+    }
+    else{
+      betavec[m] <-  rnorm(n=1, mean=0, sd=0.25)
+    }
+  }
+  for (m in (P-4):(P-1)) {
+    betavec[m] <-  rnorm(n=1, mean=0.1, sd=0.1)
+  }
+  betavec[P] <-  rnorm(n=1, mean=0.25, sd=0.01)
+  # simulate data
+  if(highcorr) {
+    corr_mat <- matrix(0.9, nrow = P, ncol = P)
     diag(corr_mat) <- rep(1,P)
     
     var_x <- rep(1,P)
@@ -95,6 +156,67 @@ f_dataset_loader <- function(dataset="pima", nobs=5*10**3, highcorr = T, server=
     list_data <- f_sim_sparse_data(nobs, highcorr)
     #list_data[["dataset"]] <- dataset
     
+  }
+  else if (dataset == "gaussian1"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    selector[P] <- F
+    selector[P-4] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
+    #browser()
+  }
+  else if (dataset == "gaussian2"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    selector[P-1] <- F
+    selector[P] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
+    #browser()
+  }
+  else if (dataset == "gaussian3"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    selector[P-2] <- F
+    selector[P] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
+  }
+  else if (dataset == "gaussian4"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    selector[P-3] <- F
+    selector[P] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
+  }
+  else if (dataset == "gaussian5"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    selector[P-4] <- F
+    selector[P] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
+  }
+  else if (dataset == "gaussian6"){
+    list_data <- f_sim_gaussian_data(nobs, highcorr)
+    P <- dim(list_data$X)[2]
+    selector <- rep(T, (P + 2))
+    #selector[P-4] <- F
+    list_data$X <- list_data$X[,selector[1:P]]
+    list_data[["betastar"]] <- list_data[["betastar"]][selector]
+    list_data[["dataset"]] <- dataset
   }
   else if (dataset == "hla"){
     if( F ) {
