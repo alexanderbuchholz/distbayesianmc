@@ -23,14 +23,14 @@ library(ggplot2)
 
 
 p1 <- ggplot(df, aes_string(x="splits", y="normconstcombined", fill="dataset")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "dataset", y = "log evidence", title="Estimated evidence synthetic gaussian model") +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "dataset", y = "log evidence", title="Estimated log evidence synthetic gaussian model") +
   theme(plot.title = element_text(hjust = 0.5, size=22),
         text = element_text(size=18),
         axis.title.x = element_text(size=18),
         axis.title.y = element_text(size=18),
         legend.position="bottom", # "bottom",
   )  +
-  scale_x_discrete(labels=c("1 \n(10,000)", "2 \n(5,000)", "5 \n(2,000)", "10 \n(1,000)", "20 \n(500)", "50 \n(200)") )+ 
+  scale_x_discrete(labels=c("1 \n(10,000; 589)", "2 \n(5,000; 295)", "5 \n(2,000; 118)", "10 \n(1,000; 59)", "20 \n(500; 29)", "50 \n(200; 12)") )+ 
   theme(axis.line = element_line(colour = "black"),
         #panel.grid.major = element_blank(),
         #panel.grid.minor = element_blank(),
@@ -65,7 +65,7 @@ p2 <- ggplot(df_bf %>% filter(dataset != 'gaussian6'), aes_string(x="splits", y=
         #axis.text.x=element_blank(),
         #axis.ticks.x=element_blank(),
         axis.title.y = element_text(size=18),
-        legend.position = "top"
+        legend.position = "bottom"
   )  +
   scale_x_discrete(labels=c("1 \n(10,000)", "2 \n(5,000)", "5 \n(2,000)", "10 \n(1,000)", "20 \n(500)", "50 \n(200)") )+ 
   theme(axis.line = element_line(colour = "black"),
@@ -95,7 +95,7 @@ df_cont <- bind_rows(res_list)
 
 
 p3 <- ggplot(df_cont %>% filter(splits != "1") , aes_string(x="splits", y="contribution", fill="dataset")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "dataset", y = "Contribution in %", title = TeX("Contribution of $\\int \\prod_{s=1}^S \\tilde{p}(\\theta | y_s) d \\theta$ to total estimated evidence")) +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "dataset", y = "Contribution in %", title = TeX("Contribution of $\\log \\int \\prod_{s=1}^S \\tilde{p}(\\theta | y_s) d \\theta$ to total evidence")) +
   theme(plot.title = element_text(hjust = 0.5, size=22),
         text = element_text(size=18),
         axis.title.x = element_text(size=18),
@@ -129,7 +129,7 @@ if(T){
 
 #df_summary %<>%  ungroup() %>% mutate(splits = as.numeric(splits))
 p4 <- ggplot(df_summary ) +
-  geom_line(aes_string(x="splits", y="pmse", color = "dataset"), size=1.2) +  theme_minimal() +  labs(fill = "dataset", y = "Percentage MSE", title = "Introduced bias from approximation") +
+  geom_line(aes_string(x="splits", y="pmse", color = "dataset"), size=1.2) +  theme_minimal() +  labs(fill = "dataset", y = "% MSE", title = "Introduced bias from approximation and splitting") +
   theme(plot.title = element_text(hjust = 0.5, size=22),
         text = element_text(size=18),
         axis.title.x = element_text(size=18),
@@ -156,7 +156,7 @@ figure2 <- ggarrange( p3, p4,
                       #labels = c("A", "B"),
                       ncol = 2)
 
-ggsave("BF_gaussian.pdf", plot = figure1, width = 15, height = 10)
+ggsave("BF_gaussian.pdf", plot = figure1, width = 15, height = 11)
 ggsave("approx_error_gaussian.pdf", plot = figure2, width = 15, height = 7)
 
 
