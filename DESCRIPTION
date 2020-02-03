@@ -2,8 +2,8 @@ Package: distbayesianmc
 Type: Package
 Title: Distributed Bayesian Model Choice
 Version: 0.1.0
-Author: Alexander Buchholz
-Maintainer: Alexander Buchholz <ab2603@cam.ac.uk>
+Author: anonymous
+Maintainer: 
 Description: This package allows distributed Bayesian model choice using rstan and bridgesampling. 
 License: MIT License
 Encoding: UTF-8

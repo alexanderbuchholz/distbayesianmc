@@ -156,7 +156,8 @@ figure2 <- ggarrange( p3, p4,
                       #labels = c("A", "B"),
                       ncol = 2)
 
-ggsave("BF_gaussian.pdf", plot = figure1, width = 15, height = 11)
+ggsave("BF_gaussian.pdf", plot = p2, width = 10, height = 5)
+ggsave("log_evidence_gaussian.pdf", plot = p1, width = 10, height = 5)
 ggsave("approx_error_gaussian.pdf", plot = figure2, width = 15, height = 7)
 
 

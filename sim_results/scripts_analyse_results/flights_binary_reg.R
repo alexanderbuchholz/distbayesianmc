@@ -38,11 +38,11 @@ library(ggplot2)
 
 
 p1 <- ggplot(df_all %>% filter(splits != "100", typesplit == "random") , aes_string(x="splits", y="normconstcombined", fill="model")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence \n flights data, both models") +
-  theme(plot.title = element_text(hjust = 0.5, size=18),
-        text = element_text(size=18),
-        axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18),
+  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence flights data, both models") +
+  theme(plot.title = element_text(hjust = 0.5, size=22),
+        text = element_text(size=22),
+        axis.title.x = element_text(size=22),
+        axis.title.y = element_text(size=22),
         legend.position="none", # "bottom",
         )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0")) +
   scale_x_discrete(labels=c("10 \n(32,734)", "20 \n(16,367)", "50 \n(6,547)") )+ 
@@ -50,15 +50,16 @@ p1 <- ggplot(df_all %>% filter(splits != "100", typesplit == "random") , aes_str
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
-        panel.background = element_blank()) +
+        panel.background = element_blank())  + scale_y_continuous(labels = scientific) +
   geom_vline(xintercept = c(1.5, 2.5)) +#guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
-  annotate("text", x = 0.72, y = -147000, label = "1a") + annotate("text", x = 0.89, y = -147000, label = "1e") +
-  annotate("text", x = 1.07, y = -146500, label = "2a") + annotate("text", x = 1.27, y = -147000, label = "2e") +
-  annotate("text", x = 1.72, y = -147000, label = "1a") + annotate("text", x = 1.89, y = -147000, label = "1e") +
-  annotate("text", x = 2.07, y = -146500, label = "2a") + annotate("text", x = 2.27, y = -148000, label = "2e") +
-  annotate("text", x = 2.72, y = -147000, label = "1a") + annotate("text", x = 2.89, y = -147500, label = "1e") +
-  annotate("text", x = 3.07, y = -146500, label = "2a") + annotate("text", x = 3.27, y = -153000, label = "2e")
+  annotate("text", x = 0.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 0.89, y = -147000, label = "1e", size= 5) +
+  annotate("text", x = 1.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 1.27, y = -147000, label = "2e", size= 5) +
+  annotate("text", x = 1.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 1.89, y = -147000, label = "1e", size= 5) +
+  annotate("text", x = 2.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 2.27, y = -148000, label = "2e", size= 5) +
+  annotate("text", x = 2.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 2.89, y = -147500, label = "1e", size= 5) +
+  annotate("text", x = 3.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 3.27, y = -153000, label = "2e", size= 5)
 
+ggsave("flightsdata_comp.pdf", plot = p1, width = 12, height = 6)
 p1
 
 
@@ -79,13 +80,14 @@ p2 <- ggplot(df_all  %>% filter(model != "2 exact", typesplit == "random") %>% f
         panel.background = element_blank()) +
   geom_vline(xintercept = c(1.5, 2.5))
 
+p2
 
 p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 exact") , aes_string(x="splits", y="normconstcombined", fill="model_strat")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence \n flights data, model 1 only") +
-  theme(plot.title = element_text(hjust = 0.5, size=18),
-        text = element_text(size=18),
-        axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18),
+  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence flights data, model 1 only") +
+  theme(plot.title = element_text(hjust = 0.5, size=22),
+        text = element_text(size=22),
+        axis.title.x = element_text(size=22),
+        axis.title.y = element_text(size=22),
         legend.position="bottom",
   )  + scale_fill_manual(values=c("#0fe600", "#E69F00", "#56B4E9", "#E600B0")) +
   scale_x_discrete(labels=c("10 \n(32,734)", "20 \n(16,367)", "50 \n(6,547)") )+ 
@@ -94,9 +96,10 @@ p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 exact") , aes_st
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank()) +
-  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=3,byrow=TRUE))
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE))
 
-
+ggsave("flightsdata_m1.pdf", plot = p3, width = 12, height = 6)
+p3
 library(ggpubr)
 figure <- ggarrange(p1, p3,
                     #labels = c("A", "B"),
@@ -111,7 +114,7 @@ plot(p3)
 
 
 # calculate normalising constant using IS
-dataset_loaded <- f_dataset_loader("flights_complex1")
+dataset_loaded <- f_dataset_loader("flights_complex2")
 splitted_data <- f_pack_split_data(dataset_loaded$X, dataset_loaded$y, ssplits=1, iseed=1, typesplit="random")
 splitted_data <- f_prep_prior_logistic(splitted_data, scale = 1)
 
@@ -123,10 +126,11 @@ resoptim <- optim(splitted_data[[1]]$bprior, negf_posterior, params=splitted_dat
 
 covarproxy <- 2*diag(diag(solve(resoptim$hessian)))
 muproxy <- resoptim$par
-samples_is <- rmvnorm(n= 200000, mean= muproxy, sigma=covarproxy)
-logweights <- f_loglik(samples_is, params = datasplits[[1]])+f_logprior(samples_is, params = datasplits[[1]]) - dmvnorm(samples_is, mean=muproxy, sigma=covarproxy, log=TRUE)
-normconstis <- log(mean(exp(logweights)))
-
+samples_is <- rmvnorm(n= 200, mean= muproxy, sigma=covarproxy)
+logweights <- f_loglik(samples_is, params = splitted_data[[1]])+f_logprior(samples_is, params = splitted_data[[1]]) - dmvnorm(samples_is, mean=muproxy, sigma=covarproxy, log=TRUE)
+normconstis <-  log_sum_exp(logweights)-log(1000)
+#normconstis <- log(mean(exp(logweights)))
+df_all %>% mutate(sqerror = (normconstcombined - normconstis)**2) %>% group_by(dataset, model, splits, model_strat) %>% summarise(MSE = mean(sqerror)**0.5/mean(normconstcombined)*100)
 
 
 

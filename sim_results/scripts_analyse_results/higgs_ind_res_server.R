@@ -82,45 +82,54 @@ df_all %<>% mutate(model = recode(dataset, higgs1_full = "1",
 
 p1 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined", fill="model")) +
   geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log evidence", title="Estimated evidence \nfor the Higgs data set") +
-  theme(plot.title = element_text(hjust = 0.5, size=18),
-        text = element_text(size=18),
-        axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18),
+  theme(plot.title = element_text(hjust = 0.5, size=24),
+        text = element_text(size=24),
+        axis.title.x = element_text(size=24),
+        axis.title.y = element_text(size=24),
         legend.position="bottom",
   )  +
-  scale_x_discrete(labels=c("100 \n(110,000)", "500 \n(22,000)", "1000 \n(11,000)") )+ 
+  scale_x_discrete(labels=c("100 \n(110k)", "500 \n(22k)", "1000 \n(11k)") )+ 
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank()) +
-  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE))
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE))+ scale_y_continuous(labels = scientific)
+#+ scale_colour_Publication()+ theme_Publication()
+
 
 
 p2 <- ggplot(df_all , aes_string(x="splits", y="normconstcombined") )+ facet_wrap(. ~ model, ncol=2, scales="free_y")+
-  geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log evidence", title="Estimated evidence for the Higgs data set") +
-  theme(plot.title = element_text(hjust = 0.5, size=18),
-        text = element_text(size=18),
-        axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18),
+  geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "log evidence", title="Estimated evidence") +
+  theme(plot.title = element_text(hjust = 0.5, size=24),
+        text = element_text(size=24),
+        axis.title.x = element_text(size=24),
+        axis.title.y = element_text(size=24),
         legend.position="bottom",
   )  +
-  scale_x_discrete(labels=c("100 \n(110,000)", "500 \n(22,000)", "1000 \n(11,000)") )+ 
+  scale_x_discrete(labels=c("100 \n(110k)", "500 \n(22k)", "1000 \n(11k)") )+ 
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank()) +
-  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=2,byrow=TRUE))
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=2,byrow=TRUE)) #+ scale_y_continuous(labels = scientific)#+scale_colour_Publication()+ theme_Publication()
+
+
+library(ggpubr)
+figure_combined <- ggarrange(p1, p2, nrow=1)
+
+ggsave("/scratch/alexander/higgsdata_combined.pdf", plot = figure_combined, width = 15, height = 5)
+
 
 ggsave("higgsdata.pdf", plot = p2, width = 8, height = 4)
 
 p3 <- ggplot(df_all , aes_string(x="splits", y="meantime") )+ facet_wrap(. ~ model, ncol=1, scales="free_y")+
   geom_boxplot() +  theme_minimal() +  labs(fill = "Model", y = "Time (secs)", title="Average computation time per shard") +
-  theme(plot.title = element_text(hjust = 0.5, size=18),
-        text = element_text(size=18),
-        axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18),
+  theme(plot.title = element_text(hjust = 0.5, size=24),
+        text = element_text(size=24),
+        axis.title.x = element_text(size=24),
+        axis.title.y = element_text(size=24),
         legend.position="bottom",
   )  +
   scale_x_discrete(labels=c("100 \n(110,000)", "500 \n(22,000)", "1000 \n(11,000)") )+ 
