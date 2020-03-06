@@ -62,6 +62,26 @@ f_prep_prior_logistic <- function(ssplitlist, scale=1){
   return(ssplitlist)
 }
 
+f_prep_prior_median <- function(ssplitlist, scale=1){
+  # prior for the median computation of the quantity of interest
+  # uses a normal prior
+  #browser()
+  ssplits = length(ssplitlist)
+  d = ssplitlist[[1]][["Pparams"]]
+  mu = rep(0, d)
+  Sigma = diag(rep(scale,d), nrow=d)
+  for(isplit in 1:ssplits){
+    ssplitlist[[isplit]][["bprior"]] <- mu
+    ssplitlist[[isplit]][["scale"]] <- scale
+    ssplitlist[[isplit]][["Bprior"]] <- Sigma
+    ssplitlist[[isplit]][["Bpriorinv"]] <- solve(Sigma)
+    ssplitlist[[isplit]][["ssplits"]] <- ssplits
+    ssplitlist[[isplit]][["isplit"]] <- isplit
+    ssplitlist[[isplit]][["R"]] <- ssplits
+  }
+  return(ssplitlist)
+}
+
 
 # functions for logistic regression
 f_pg_cond <- function(betacurrent, params){

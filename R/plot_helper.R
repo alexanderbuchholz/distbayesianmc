@@ -41,6 +41,7 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
           res_small[["splits"]] <- ssplits
           res_small[["typesplit"]] <- typesplit
           res_small[["var_logsubposteriors"]] <- var(res_small$vec_logsubpost)
+          res_small[["medianlogsubpost"]] <- median(res_small$vec_logsubpost)
           res_small[["vec_logsubpost"]] <- NULL
           res_small[["vec_loggaussianconst"]] <- NULL
           res_small[["vec_logsubpost_ep"]] <- NULL
@@ -53,6 +54,7 @@ f_combine_const_data_in_frame <- function(vec_splits, vec_datasets, vec_types_sp
           res_small$vec_logsubpost_is <- NULL
           res_small$betasamples <- NULL
           res_small[["dataset"]] <- dataset
+          
           #res_to_keep <- list(iter=iter, ssplits=ssplits, normconstcombinedapprox=as.vector(res_small[["normconstcombinedapprox"]]))
           #data_list[[icounter]] <- res_to_keep
           data_list[[icounter]] <- res_small

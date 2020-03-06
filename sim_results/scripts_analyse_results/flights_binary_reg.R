@@ -26,10 +26,10 @@ df_logistic_reduced <- df_logistic %>% select(normconstcombined, splits, dataset
 df_logistic_exact_reduced <- df_logistic_exact %>% select(normconstcombined, splits, dataset, typesplit)
 
 
-df_logistic_exact_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 exact")) %>% mutate(model = replace(model, model=="flights_complex2", "2 exact"))
+df_logistic_exact_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "cond")) %>% mutate(model = replace(model, model=="flights_complex2", "2 cond"))
 df_logistic_exact_reduced %<>% mutate(model_strat = replace(typesplit, typesplit=="strat_y_cluster", "stratified")) %>% mutate(model_strat = paste(model_strat, model, sep= " "))
 
-df_logistic_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "1 approx")) %>% mutate(model = replace(model, model=="flights_complex2", "2 approx"))
+df_logistic_reduced %<>% mutate(model = replace(dataset, dataset=="flights_complex1", "approx")) %>% mutate(model = replace(model, model=="flights_complex2", "2 approx"))
 df_logistic_reduced %<>% mutate(model_strat = replace(typesplit, typesplit=="strat_y_cluster", "stratified")) %>% mutate(model_strat = paste(model_strat, model, sep= " "))
 
 df_all <- rbind(df_logistic_reduced, df_logistic_exact_reduced)
@@ -52,12 +52,12 @@ p1 <- ggplot(df_all %>% filter(splits != "100", typesplit == "random") , aes_str
         panel.border = element_blank(),
         panel.background = element_blank())  + scale_y_continuous(labels = scientific) +
   geom_vline(xintercept = c(1.5, 2.5)) +#guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
-  annotate("text", x = 0.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 0.89, y = -147000, label = "1e", size= 5) +
-  annotate("text", x = 1.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 1.27, y = -147000, label = "2e", size= 5) +
-  annotate("text", x = 1.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 1.89, y = -147000, label = "1e", size= 5) +
-  annotate("text", x = 2.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 2.27, y = -148000, label = "2e", size= 5) +
-  annotate("text", x = 2.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 2.89, y = -147500, label = "1e", size= 5) +
-  annotate("text", x = 3.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 3.27, y = -153000, label = "2e", size= 5)
+  annotate("text", x = 0.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 0.89, y = -147000, label = "1c", size= 5) +
+  annotate("text", x = 1.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 1.27, y = -147000, label = "2c", size= 5) +
+  annotate("text", x = 1.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 1.89, y = -147000, label = "1c", size= 5) +
+  annotate("text", x = 2.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 2.27, y = -148000, label = "2c", size= 5) +
+  annotate("text", x = 2.72, y = -147000, label = "1a", size= 5) + annotate("text", x = 2.89, y = -147500, label = "1c", size= 5) +
+  annotate("text", x = 3.07, y = -146500, label = "2a", size= 5) + annotate("text", x = 3.27, y = -153000, label = "2c", size= 5)
 
 ggsave("flightsdata_comp.pdf", plot = p1, width = 12, height = 6)
 p1
@@ -82,8 +82,8 @@ p2 <- ggplot(df_all  %>% filter(model != "2 exact", typesplit == "random") %>% f
 
 p2
 
-p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 exact") , aes_string(x="splits", y="normconstcombined", fill="model_strat")) +
-  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence flights data, model 1 only") +
+p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 cond") , aes_string(x="splits", y="normconstcombined", fill="model_strat")) +
+  geom_boxplot() +  theme_minimal() +  labs(fill = "", y = "log evidence", title="Estimated evidence flights data") +
   theme(plot.title = element_text(hjust = 0.5, size=22),
         text = element_text(size=22),
         axis.title.x = element_text(size=22),
@@ -96,7 +96,7 @@ p3 <- ggplot(df_all %>% filter(model != "2 approx", model != "2 exact") , aes_st
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank()) +
-  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE))
+  geom_vline(xintercept = c(1.5, 2.5)) +guides(fill=guide_legend(nrow=1,byrow=TRUE)) + geom_hline(aes(yintercept=-147548), colour="#990000")
 
 ggsave("flightsdata_m1.pdf", plot = p3, width = 12, height = 6)
 p3
